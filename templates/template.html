@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 auto;
+        padding: 9mm 11mm 8mm 11mm;
+        font-family: 'Noto Sans KR', sans-serif;
+        color: #222222;
+        line-height: 1.32;
+        font-size: 8.3pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background-color: #ffffff;
+    }
+    
+    /* 상단 헤더 */
+    .top-header {
+        background-color: #0b3472 !important;
+        color: #ffffff !important;
+        padding: 11px 18px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+    .top-subtag {
+        font-size: 7.2pt;
+        font-weight: 700;
+        color: #60a5fa !important;
+        letter-spacing: 0.8px;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+    .top-title {
+        font-size: 13.8pt;
+        font-weight: 900;
+        margin-bottom: 2px;
+        letter-spacing: -0.3px;
+    }
+    .top-desc {
+        font-size: 7.8pt;
+        color: #cbd5e1;
+    }
+
+    /* 2열 그리드 */
+    .grid-container {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+    }
+    .col-left {
+        width: 47%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .col-right {
+        width: 53%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .card-panel {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 7px 9px;
+        background-color: #ffffff;
+    }
+
+    .section-title {
+        font-size: 8.8pt;
+        font-weight: 700;
+        color: #0b3472;
+        margin: 0 0 5px 0;
+        padding-bottom: 2px;
+        border-bottom: 1.5px solid #0b3472;
+    }
+    
+    /* 사진 영역 */
+    .photo-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 5px;
+        background-color: #ffffff;
+    }
+    .photo-container {
+        width: 100%;
+        height: 140px;
+        border-radius: 4px;
+        overflow: hidden;
+        background-color: #f8fafc;
+        margin-bottom: 3px;
+    }
+    .photo-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .photo-caption {
+        font-size: 6.8pt;
+        font-weight: 700;
+        color: #475569;
+        text-align: center;
+        margin: 1px 0;
+    }
+
+    /* 1번 진단 경고 박스 */
+    .alert-box {
+        background-color: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #be123c;
+        font-weight: 700;
+        padding: 4px 7px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        font-size: 7.5pt;
+    }
+    .diagnosis-desc {
+        font-size: 7.2pt;
+        color: #475569;
+        line-height: 1.35;
+        margin: 0;
+    }
+
+    /* 2번 케어 리스트 */
+    .care-item { margin-bottom: 3.5px; }
+    .care-item:last-child { margin-bottom: 0; }
+    .care-title {
+        font-weight: 700;
+        font-size: 7.5pt;
+        color: #1e293b;
+    }
+    .care-desc {
+        font-size: 6.8pt;
+        color: #64748b;
+        margin-top: 1px;
+    }
+
+    /* 3번 도입 기대효과 */
+    .effect-item {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 4px 6px;
+        margin-bottom: 3px;
+    }
+    .effect-item:last-child { margin-bottom: 0; }
+    .effect-title {
+        font-weight: 700;
+        font-size: 7.3pt;
+        color: #0b3472;
+    }
+    .effect-desc {
+        font-size: 6.8pt;
+        color: #475569;
+        margin-top: 1px;
+    }
+
+    /* 4번 설계 표 */
+    table.data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 4px;
+    }
+    table.data-table th {
+        background-color: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        padding: 3.5px 4px;
+        font-size: 7pt;
+        font-weight: 700;
+        color: #334155;
+        text-align: center;
+    }
+    table.data-table td {
+        border: 1px solid #cbd5e1;
+        padding: 3.5px 4px;
+        font-size: 7pt;
+        vertical-align: middle;
+    }
+    .text-center { text-align: center; }
+    .text-right { text-align: right; }
+
+    /* 공간별 도입 효과 */
+    .solution-guide-box {
+        background-color: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 4px;
+        padding: 4.5px 6.5px;
+        font-size: 6.9pt;
+        color: #0369a1;
+        line-height: 1.35;
+    }
+
+    /* 5번 견적 블록 */
+    .pricing-item {
+        margin-bottom: 3px;
+        font-size: 7.2pt;
+    }
+    .price-name {
+        font-weight: 700;
+        color: #1e293b;
+    }
+    .price-orig {
+        color: #64748b;
+        text-decoration: line-through;
+    }
+    .price-sale {
+        font-weight: 700;
+        color: #0b3472;
+    }
+    .promo-red {
+        color: #e11d48;
+        font-weight: 700;
+        font-size: 6.8pt;
+    }
+
+    /* 결제 플로우 요약 */
+    .flow-box {
+        border: 1.5px solid #0b3472;
+        border-radius: 4px;
+        padding: 4px 7px;
+        margin-top: 3px;
+        background-color: #ffffff;
+    }
+    .flow-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2px 0;
+        font-size: 7.3pt;
+    }
+    .badge-tag {
+        background-color: #0284c7;
+        color: #ffffff;
+        font-size: 6.2pt;
+        padding: 1px 4px;
+        border-radius: 2px;
+        font-weight: 700;
+        margin-left: 3px;
+    }
+    .badge-red { background-color: #e11d48; }
+    .badge-green { background-color: #059669; }
+
+    /* 개선된 하단 계약 및 프로모션 안내 전용 박스 */
+    .footer-panel {
+        margin-top: 7px;
+        background-color: #f8fafc;
+        border: 1.2px solid #cbd5e1;
+        border-left: 4px solid #0b3472;
+        border-radius: 4px;
+        padding: 6px 9px;
+    }
+    .footer-panel-title {
+        font-size: 7.5pt;
+        font-weight: 700;
+        color: #0b3472;
+        margin-bottom: 2px;
+    }
+    .footer-panel-text {
+        font-size: 7.2pt;
+        color: #334155;
+        line-height: 1.35;
+        margin: 0;
+    }
+</style>
+</head>
+<body>
+
+<!-- 상단 헤더 -->
+<div class="top-header">
+    <div class="top-subtag">{{ data.header_subtag }}</div>
+    <div class="top-title">{{ data.client_name }} 공간 맞춤 환경 솔루션 제안서</div>
+    <div class="top-desc">{{ data.header_description }}</div>
+</div>
+
+<div class="grid-container">
+    <!-- 좌측 열 -->
+    <div class="col-left">
+        {% if photo_base64 %}
+        <div class="photo-card">
+            <div class="photo-container">
+                <img src="data:image/jpeg;base64,{{ photo_base64 }}" />
+            </div>
+            <div class="photo-caption">[ 현장 진단 ] {{ data.client_name }} 실사 전경</div>
+        </div>
+        {% endif %}
+
+        <div class="card-panel">
+            <div class="section-title">1. 현장 진단 및 환경 분석</div>
+            <div class="alert-box">
+                ⚠️ {{ data.diagnosis_alert }}
+            </div>
+            <p class="diagnosis-desc">{{ data.diagnosis_description }}</p>
+        </div>
+
+        <div class="card-panel">
+            <div class="section-title">2. 세스코 정기 케어 솔루션</div>
+            {% for care in data.care_solutions %}
+            <div class="care-item">
+                <div class="care-title">{{ care.icon }} {{ care.title }}</div>
+                <div class="care-desc">{{ care.desc }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card-panel">
+            <div class="section-title">3. 도입 기대 효과 및 가치</div>
+            {% for eff in data.expected_values %}
+            <div class="effect-item">
+                <div class="effect-title">{{ eff.title }}</div>
+                <div class="effect-desc">{{ eff.desc }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 우측 열 -->
+    <div class="col-right">
+        <div class="card-panel">
+            <div class="section-title">4. 공간별 맞춤 솔루션 설계</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">설치 구역</th>
+                        <th style="width: 25%;">제품군 / 기기명</th>
+                        <th style="width: 14%;">수량</th>
+                        <th style="width: 41%;">선택 조향 / 상세 사양</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data.solution_items %}
+                    <tr>
+                        <td><strong>{{ item.zone }}</strong></td>
+                        <td><span style="color:#64748b; font-size:5.8pt;">[{{ item.category }}]</span><br>{{ item.device }}</td>
+                        <td class="text-center"><strong>{{ item.qty }}대</strong></td>
+                        <td>{{ item.scent }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="solution-guide-box">
+                <div style="font-weight:700; color:#0284c7; margin-bottom:2px;">[ 공간별 솔루션 도입 필요성 및 효과 ]</div>
+                {% for guide in data.space_guides %}
+                • <strong>{{ guide.zone }}:</strong> {{ guide.desc }}<br>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card-panel">
+            <div class="section-title">5. 견적 및 프로모션 안내 <span style="font-size: 6.5pt; font-weight: normal; color: #64748b;">(VAT 포함)</span></div>
+            
+            {% for p in data.pricing_blocks %}
+            <div class="pricing-item">
+                <div class="price-name">{{ p.product_name }}</div>
+                <div>{% if p.original_price %}정상가: <span class="price-orig">월 {{ p.original_price }}</span> → {% endif %}<span class="price-sale">할인가: 월 {{ p.discounted_price }}</span></div>
+                {% if p.promo_text %}
+                <div class="promo-red">★ {{ p.promo_text }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="flow-box">
+                {% for row in data.summary_rows %}
+                <div class="flow-row">
+                    <div>{{ row.label }}</div>
+                    <div class="text-right">
+                        {% if row.badge %}
+                        <span class="badge-tag {% if '사은' in row.badge or '증정' in row.badge %}badge-green{% elif '반값' in row.badge or '프로모션' in row.badge or '할인' in row.badge %}badge-red{% endif %}">{{ row.badge }}</span>
+                        {% endif %}
+                        <strong style="color: {% if '반값' in row.badge or '프로모션' in row.badge or '할인' in row.badge %}#e11d48{% else %}#0b3472{% endif %}; font-size: 7.8pt;">{{ row.price_display }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 선명하고 큼직해진 하단 안내 박스 -->
+<div class="footer-panel">
+    <div class="footer-panel-title">📋 계약 및 프로모션 안내사항</div>
+    <p class="footer-panel-text">{{ data.footer_notice }}</p>
+</div>
+
+</body>
+</html>
