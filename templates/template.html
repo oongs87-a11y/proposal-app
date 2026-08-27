@@ -24,7 +24,7 @@
       height: 297mm;
       max-height: 297mm;
       background: #ffffff;
-      padding: 9mm 12mm 8mm 12mm;
+      padding: 8mm 12mm 8mm 12mm;
       box-sizing: border-box;
       color: #1e293b;
       display: flex;
@@ -37,12 +37,12 @@
     .header-banner {
       background: linear-gradient(135deg, #002b49 0%, #0f4c81 100%);
       border-radius: 8px;
-      padding: 13px 18px;
+      padding: 12px 18px;
       color: #ffffff;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       flex-shrink: 0;
     }
     .header-left { flex: 1; }
@@ -88,7 +88,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 7px;
     }
 
     .col-right {
@@ -102,22 +102,22 @@
     .card-box {
       border: 1px solid #cbd5e1;
       border-radius: 7px;
-      padding: 12px 14px;
+      padding: 10px 13px;
       background: #ffffff;
     }
     .card-title {
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
       color: #0f4c81;
       border-bottom: 1.5px solid #e2e8f0;
-      padding-bottom: 5px;
-      margin-bottom: 8px;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     /* 현장 사진 & 대체 배너 */
     .photo-wrapper {
       width: 100%;
-      height: 125px;
+      height: 115px;
       border-radius: 5px;
       overflow: hidden;
       border: 1px solid #e2e8f0;
@@ -133,14 +133,14 @@
     }
     .photo-caption {
       text-align: center;
-      font-size: 9.5px;
+      font-size: 9px;
       color: #64748b;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     .no-photo-banner {
       width: 100%;
-      height: 110px;
+      height: 100px;
       background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
       border: 1px dashed #7dd3fc;
       border-radius: 6px;
@@ -161,41 +161,41 @@
       margin-bottom: 3px;
     }
     .no-photo-title {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
       color: #0369a1;
       margin-bottom: 2px;
     }
     .no-photo-desc {
-      font-size: 9.5px;
+      font-size: 9px;
       color: #475569;
-      line-height: 1.4;
+      line-height: 1.35;
     }
 
     /* 1. 진단 텍스트 */
     .alert-chip {
       background: #fef2f2;
       border-left: 3.5px solid #ef4444;
-      padding: 6px 10px;
-      font-size: 11.5px;
+      padding: 5px 9px;
+      font-size: 11px;
       font-weight: 700;
       color: #dc2626;
       border-radius: 0 4px 4px 0;
-      margin-bottom: 7px;
+      margin-bottom: 5px;
     }
     .diag-text {
-      font-size: 10.5px;
+      font-size: 10px;
       color: #334155;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     /* 2 & 3. 케어 및 기대효과 리스트 */
     .care-item, .exp-item {
       display: flex;
-      gap: 9px;
-      margin-bottom: 7px;
-      font-size: 10.5px;
-      line-height: 1.45;
+      gap: 8px;
+      margin-bottom: 5px;
+      font-size: 10px;
+      line-height: 1.4;
     }
     .care-item:last-child, .exp-item:last-child {
       margin-bottom: 0;
@@ -203,8 +203,8 @@
     .item-body strong {
       display: block;
       color: #0f172a;
-      font-size: 11px;
-      margin-bottom: 2px;
+      font-size: 10.5px;
+      margin-bottom: 1px;
     }
     .item-body span {
       color: #64748b;
@@ -220,12 +220,12 @@
     .quote-table th {
       background: #f1f5f9;
       color: #1e293b;
-      padding: 5px 4px;
+      padding: 4.5px 4px;
       border: 1px solid #cbd5e1;
       font-weight: 700;
     }
     .quote-table td {
-      padding: 4.5px 4px;
+      padding: 4px 4px;
       border: 1px solid #cbd5e1;
       color: #334155;
       vertical-align: middle;
@@ -239,22 +239,22 @@
       line-height: 1.35;
     }
 
-    /* 5. 견적 및 프로모션 안내 */
+    /* 5. 견적 및 프로모션 안내 (품목별 테이블) */
     .price-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 9.5px;
+      font-size: 9px;
       margin-bottom: 6px;
     }
     .price-table th {
       background: #f1f5f9;
       color: #1e293b;
-      padding: 5px 6px;
+      padding: 4px 6px;
       border: 1px solid #cbd5e1;
       font-weight: 700;
     }
     .price-table td {
-      padding: 4px 6px;
+      padding: 3.5px 6px;
       border: 1px solid #cbd5e1;
       vertical-align: middle;
     }
@@ -266,18 +266,71 @@
       margin-left: 4px;
     }
 
-    /* 결제 요약 박스 */
+    /* 견적 총괄 하이라이트 배너 (정상가 -> 할인 -> 최종금액) */
+    .grand-total-banner {
+      background: linear-gradient(135deg, #f8fafc 0%, #eef6ff 100%);
+      border: 1.5px solid #93c5fd;
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .grand-total-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .grand-orig-line {
+      font-size: 9.5px;
+      color: #64748b;
+    }
+    .grand-orig-price {
+      text-decoration: line-through;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+    .grand-discount-badge {
+      display: inline-flex;
+      align-items: center;
+      background: #fee2e2;
+      color: #dc2626;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 4px;
+    }
+    .grand-total-right {
+      text-align: right;
+    }
+    .grand-final-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      letter-spacing: -0.3px;
+    }
+    .grand-final-price {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0f4c81;
+      letter-spacing: -0.5px;
+    }
+
+    /* 결제 부가 요약 리스트 */
     .price-summary-box {
-      border-top: 1.5px dashed #cbd5e1;
-      padding-top: 6px;
+      border-top: 1px dashed #cbd5e1;
+      padding-top: 4px;
     }
     .summary-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 10.5px;
-      font-weight: 700;
-      margin-bottom: 3px;
+      font-size: 9.5px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #475569;
     }
     .summary-line:last-child {
       margin-bottom: 0;
@@ -285,24 +338,36 @@
     .tag-badge {
       background: #e0f2fe;
       color: #0369a1;
-      padding: 1px 5px;
+      padding: 1px 4px;
       border-radius: 3px;
-      font-size: 9px;
-      font-weight: 600;
+      font-size: 8.5px;
+      font-weight: 700;
       margin-right: 4px;
     }
 
     /* 하단 정식 공지사항 */
     .footer-box {
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-left: 4px solid #0f4c81;
-      border-radius: 5px;
-      padding: 7px 11px;
-      font-size: 9.5px;
-      color: #475569;
-      line-height: 1.4;
+      border: 1px solid #cbd5e1;
+      border-left: 4.5px solid #0f4c81;
+      border-radius: 6px;
+      padding: 9px 13px;
       flex-shrink: 0;
+    }
+    .footer-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f4c81;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .footer-content {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: #334155;
+      line-height: 1.55;
     }
   </style>
 </head>
@@ -422,10 +487,11 @@
         </table>
       </div>
 
-      <!-- 5. 견적 및 프로모션 안내 -->
+      <!-- 5. 견적 및 프로모션 상세 -->
       <div class="card-box" style="padding: 8px 10px;">
         <div class="card-title">5. 견적 및 프로모션 상세 <span style="font-size:9.5px; font-weight:normal; color:#64748b;">(VAT 포함)</span></div>
         
+        <!-- 품목별 금액 테이블 -->
         <table class="price-table">
           <thead>
             <tr>
@@ -445,7 +511,7 @@
                 <span class="promo-highlight">🎁 {{ block.promo_text }}</span>
                 {% endif %}
               </td>
-              <td style="text-align: right; font-weight: 700; color: #0f4c81; font-size: 11px;">
+              <td style="text-align: right; font-weight: 700; color: #0f4c81; font-size: 10.5px;">
                 {{ block.discounted_price }}
               </td>
             </tr>
@@ -453,7 +519,29 @@
           </tbody>
         </table>
 
-        <!-- 결제 요약 -->
+        <!-- 정상가 -> 할인혜택 -> 최종 결제액 강조 배너 -->
+        <div class="grand-total-banner">
+          <div class="grand-total-left">
+            {% if data.total_orig_display %}
+            <div class="grand-orig-line">
+              <span>총 정상가: </span>
+              <span class="grand-orig-price">{{ data.total_orig_display }}</span>
+            </div>
+            {% endif %}
+            {% if data.total_discount_display %}
+            <div>
+              <span style="font-size:9px; color:#475569; font-weight:600;">프로모션 할인: </span>
+              <span class="grand-discount-badge">혜택 {{ data.total_discount_display }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <div class="grand-total-right">
+            <div class="grand-final-label">최종 매월 정기 결제액 (VAT포함)</div>
+            <div class="grand-final-price">{{ data.total_sale_display }}</div>
+          </div>
+        </div>
+
+        <!-- 기타 결제/사은품 안내 -->
         <div class="price-summary-box">
           {% for row in data.summary_rows %}
           <div class="summary-line">
@@ -461,7 +549,7 @@
               <span class="tag-badge">{{ row.badge }}</span>
               <span>{{ row.label }}</span>
             </div>
-            <div style="color: #0f4c81; font-size: 11.5px;">{{ row.price_display }}</div>
+            <div style="font-weight: 600; color: #1e293b;">{{ row.price_display }}</div>
           </div>
           {% endfor %}
         </div>
@@ -471,9 +559,10 @@
 
   </div>
 
-  <!-- 하단 공지 -->
+  <!-- 하단 정식 공지사항 -->
   <div class="footer-box">
-    <strong>📋 계약 및 프로모션 안내사항:</strong> {{ data.footer_notice }}
+    <div class="footer-title">📋 계약 및 프로모션 공식 안내사항</div>
+    <div class="footer-content">{{ data.footer_notice }}</div>
   </div>
 
 </body>
