@@ -68,32 +68,32 @@ st.markdown("""
         align-items: center;
         flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
     .hero-badge {
         display: inline-flex;
         align-items: center;
         background: rgba(255, 255, 255, 0.15);
         backdrop-filter: blur(8px);
-        padding: 4px 12px;
+        padding: 5px 12px;
         border-radius: 9999px;
-        font-size: 11px;
+        font-size: 11.5px;
         font-weight: 700;
         letter-spacing: 0.5px;
         color: #90e0ef;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.25);
     }
-    .hero-bug-badge {
+    .hero-feature-badge {
         display: inline-flex;
         align-items: center;
-        background: rgba(239, 68, 68, 0.2);
+        background: rgba(245, 158, 11, 0.2);
         backdrop-filter: blur(8px);
-        padding: 4px 12px;
+        padding: 5px 12px;
         border-radius: 8px;
         font-size: 11px;
-        font-weight: 600;
-        color: #fecaca;
-        border: 1px solid rgba(239, 68, 68, 0.35);
+        font-weight: 700;
+        color: #fde68a;
+        border: 1px solid rgba(245, 158, 11, 0.4);
     }
     .hero-title {
         font-size: 24px !important;
@@ -106,7 +106,18 @@ st.markdown("""
         font-size: 13px !important;
         color: #cbd5e1 !important;
         font-weight: 400;
-        margin: 0 !important;
+        margin: 0 0 8px 0 !important;
+    }
+    .hero-bottom-tag {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(239, 68, 68, 0.18);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #fecaca;
     }
 
     .premium-card {
@@ -328,14 +339,16 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
         
     return pdf_bytes
 
+# 상단 위트 배너 영역
 st.markdown("""
 <div class="hero-header">
     <div class="hero-top-row">
-        <div class="hero-badge">☕ DEVELOPED BY COFFEE & 이웅희</div>
-        <div class="hero-bug-badge">📈 버그 신고: 이웅희 (계약서 들고 오시면 즉시 버그 박멸)</div>
+        <div class="hero-badge">🚀 DEVELOPED BY 이웅희</div>
+        <div class="hero-feature-badge">🏆 기능 개선 요청: 이번 달 계약 1건 추가 시 즉시 패치</div>
     </div>
     <div class="hero-title">🛡️ 세스코 환경 솔루션 견적·제안 시스템</div>
-    <div class="hero-sub">칼퇴를 향한 이웅희 팀장의 피·땀·눈물로 완성된 현장 영업 특화 1초 견적 자동화 엔진</div>
+    <div class="hero-sub">밤마다 코드를 손수 깎아 영업인들의 칼퇴를 보장하는 1초 맞춤 견적기</div>
+    <div class="hero-bottom-tag">📈 버그 신고: 이웅희 팀장 (계약서 들고 사무실로 오시면 즉시 박멸 🪳)</div>
 </div>
 """, unsafe_allow_html=True)
 
