@@ -372,7 +372,7 @@ with col1:
     st.markdown('<div class="premium-card"><div class="card-label">⚙️ 3. 설치 구역 및 기기·조건 설정</div>', unsafe_allow_html=True)
     
     with st.form("item_add_form", clear_on_submit=True):
-        f_zone = st.text_input("설치 구역명", placeholder="예: 메인 홀, 원장실, 남/여 화장실 등")
+        f_zone = st.text_input("설치 구획명", placeholder="예: 메인 홀, 원장실, 남/여 화장실 등")
         
         c_cat_col, c_cycle_col = st.columns([1, 1])
         with c_cat_col:
@@ -390,7 +390,7 @@ with col1:
         with c_dev_col:
             f_dev = st.text_input("제품 이름 (직접 입력)", placeholder="예: 판테온 트루살균 20평형, 에어퍼퓸200")
         with c_color_col:
-            f_color = st.text_input("제품 색상", placeholder="예: 화이트, 다크그레이")
+            f_color = st.text_input("제품 색상", placeholder="예: 화이트, 블랙")
         
         c_p1, c_p2, c_p3 = st.columns(3)
         with c_p1:
@@ -400,7 +400,7 @@ with col1:
         with c_p3:
             f_sale = st.number_input("할인가(대당/월)", min_value=0, value=0, step=1000)
 
-        f_spec = st.text_input("선택 조향 / 상세 사양 (선택)", placeholder="예: 프리지아 향, 살균 케어, 피톤치드 릴렉스")
+        f_spec = st.text_input("선택 조향 / 상세 사양 (선택)", placeholder="예: 프리지아, 901 썸머")
         
         st.markdown("<p style='font-size:12.5px; font-weight:700; margin:8px 0 4px 0; color:#334155;'>개별 프로모션 조건 선택 (선택)</p>", unsafe_allow_html=True)
         c_pr_m, c_pr_t = st.columns([1, 1])
