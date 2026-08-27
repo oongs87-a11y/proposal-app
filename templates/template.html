@@ -35,6 +35,12 @@
       padding: 18px 22px;
       color: #ffffff;
       margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-left {
+      flex: 1;
     }
     .header-tag {
       font-size: 11px;
@@ -52,6 +58,30 @@
     .header-desc {
       font-size: 12px;
       color: #e2e8f0;
+    }
+    .header-manager-box {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 10px 14px;
+      text-align: right;
+      min-width: 170px;
+    }
+    .manager-label {
+      font-size: 10px;
+      color: #90e0ef;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .manager-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .manager-phone {
+      font-size: 12px;
+      color: #e2e8f0;
+      margin-top: 2px;
     }
 
     /* 2단 메인 본문 */
@@ -228,11 +258,20 @@
 </head>
 <body>
 
-  <!-- 헤더 -->
+  <!-- 헤더 (좌측: 제안 정보 / 우측: 담당자 정보) -->
   <div class="header-banner">
-    <div class="header-tag">{{ data.header_subtag or 'CESCO ENVIRONMENTAL CARE CONSULTING' }}</div>
-    <div class="header-title">{{ data.client_name }} 공간 맞춤 환경 솔루션 제안서</div>
-    <div class="header-desc">{{ data.header_description or '쾌적하고 안전한 안심 공간 조성을 위한 세스코 공식 솔루션' }}</div>
+    <div class="header-left">
+      <div class="header-tag">{{ data.header_subtag or 'CESCO ENVIRONMENTAL CARE CONSULTING' }}</div>
+      <div class="header-title">{{ data.client_name }} 공간 맞춤 환경 솔루션 제안서</div>
+      <div class="header-desc">{{ data.header_description or '쾌적하고 안전한 안심 공간 조성을 위한 세스코 공식 솔루션' }}</div>
+    </div>
+    {% if data.manager_name or data.manager_phone %}
+    <div class="header-manager-box">
+      <div class="manager-label">담당 환경위생 컨설턴트</div>
+      {% if data.manager_name %}<div class="manager-name">{{ data.manager_name }}</div>{% endif %}
+      {% if data.manager_phone %}<div class="manager-phone">📞 {{ data.manager_phone }}</div>{% endif %}
+    </div>
+    {% endif %}
   </div>
 
   <!-- 메인 2단 영역 -->
