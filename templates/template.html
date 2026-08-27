@@ -24,7 +24,7 @@
       height: 297mm;
       max-height: 297mm;
       background: #ffffff;
-      padding: 11mm 12mm 10mm 12mm;
+      padding: 12mm 13mm 11mm 13mm;
       box-sizing: border-box;
       color: #1e293b;
       display: flex;
@@ -33,107 +33,93 @@
       overflow: hidden;
     }
 
-    /* 1. 상단 헤더 */
+    /* 상단 헤더 */
     .header-banner {
       background: linear-gradient(135deg, #002b49 0%, #0f4c81 100%);
-      border-radius: 7px;
-      padding: 12px 18px;
+      border-radius: 8px;
+      padding: 14px 20px;
       color: #ffffff;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       flex-shrink: 0;
     }
     .header-left { flex: 1; }
     .header-tag {
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
       color: #7dd3fc;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
     .header-title {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.5px;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
     .header-desc {
-      font-size: 10.5px;
+      font-size: 11px;
       color: #e2e8f0;
     }
     .header-manager-box {
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 6px;
-      padding: 6px 12px;
+      padding: 8px 12px;
       text-align: right;
       min-width: 150px;
     }
     .manager-label { font-size: 9px; color: #90e0ef; font-weight: 600; }
-    .manager-name { font-size: 12.5px; font-weight: 700; color: #ffffff; }
-    .manager-phone { font-size: 11px; color: #e2e8f0; margin-top: 1px; }
+    .manager-name { font-size: 13px; font-weight: 700; color: #ffffff; margin-top: 2px; }
+    .manager-phone { font-size: 11.5px; color: #e2e8f0; margin-top: 2px; }
 
-    /* 2단 메인 본문 */
+    /* 메인 본문 2열 */
     .main-body {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       flex: 1;
-      margin-bottom: 8px;
-      min-height: 0;
+      margin-bottom: 10px;
+      align-items: flex-start; /* 양쪽 기둥이 서로의 높이에 맞춰 늘어나지 않게 고정 */
     }
 
     .col-left {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      height: 100%;
+      gap: 10px;
     }
 
     .col-right {
-      flex: 1.08;
+      flex: 1.05;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      height: 100%;
+      gap: 10px;
     }
 
     /* 섹션 카드 공통 */
     .card-box {
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 9px 12px;
+      border-radius: 7px;
+      padding: 12px 14px;
       background: #ffffff;
-      display: flex;
-      flex-direction: column;
+      height: max-content; /* 박스가 내용물 크기에 딱 맞게 고정됨 (늘어남 방지) */
     }
     .card-title {
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #0f4c81;
       border-bottom: 1.5px solid #e2e8f0;
-      padding-bottom: 4px;
-      margin-bottom: 6px;
-      flex-shrink: 0;
-    }
-
-    /* 좌측 카드 높이 자동 균등 분배 */
-    .left-card {
-      flex: 1;
-      justify-content: flex-start;
+      padding-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     /* 사진 및 대체 배너 */
-    .photo-card {
-      padding: 6px;
-      flex-shrink: 0;
-    }
     .photo-wrapper {
       width: 100%;
       height: 125px;
-      border-radius: 4px;
+      border-radius: 5px;
       overflow: hidden;
       border: 1px solid #e2e8f0;
       background: #f8fafc;
@@ -148,9 +134,9 @@
     }
     .photo-caption {
       text-align: center;
-      font-size: 8.5px;
+      font-size: 9px;
       color: #64748b;
-      margin-top: 3px;
+      margin-top: 4px;
     }
 
     .no-photo-banner {
@@ -158,60 +144,59 @@
       height: 115px;
       background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
       border: 1px dashed #7dd3fc;
-      border-radius: 5px;
+      border-radius: 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 8px;
+      padding: 10px;
       text-align: center;
-      flex-shrink: 0;
     }
     .no-photo-badge {
       background: #0f4c81;
       color: #ffffff;
-      font-size: 8.5px;
+      font-size: 9px;
       font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 10px;
-      margin-bottom: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      margin-bottom: 5px;
     }
     .no-photo-title {
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 800;
       color: #0369a1;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
     }
     .no-photo-desc {
-      font-size: 8.5px;
+      font-size: 9px;
       color: #475569;
-      line-height: 1.35;
+      line-height: 1.4;
     }
 
     /* 진단 텍스트 */
     .alert-chip {
       background: #fef2f2;
       border-left: 3px solid #ef4444;
-      padding: 4px 7px;
-      font-size: 9.5px;
+      padding: 6px 10px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #dc2626;
       border-radius: 0 4px 4px 0;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .diag-text {
-      font-size: 9px;
+      font-size: 9.5px;
       color: #475569;
-      line-height: 1.45;
+      line-height: 1.5;
     }
 
-    /* 리스트 항목들 */
+    /* 케어 & 기대효과 리스트 */
     .care-item, .exp-item {
       display: flex;
-      gap: 6px;
-      margin-bottom: 4px;
-      font-size: 9px;
-      line-height: 1.35;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 9.5px;
+      line-height: 1.4;
     }
     .care-item:last-child, .exp-item:last-child {
       margin-bottom: 0;
@@ -219,28 +204,29 @@
     .item-body strong {
       display: block;
       color: #1e293b;
-      font-size: 9.5px;
+      font-size: 10.5px;
+      margin-bottom: 2px;
     }
     .item-body span {
       color: #64748b;
     }
 
-    /* 우측 테이블 */
+    /* 우측 테이블 공통 */
     .quote-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 8.5px;
+      font-size: 9px;
       text-align: center;
     }
     .quote-table th {
       background: #f1f5f9;
       color: #1e293b;
-      padding: 4.5px 3px;
+      padding: 5px 4px;
       border: 1px solid #cbd5e1;
       font-weight: 700;
     }
     .quote-table td {
-      padding: 4px 3px;
+      padding: 5px 4px;
       border: 1px solid #cbd5e1;
       color: #334155;
       vertical-align: middle;
@@ -248,25 +234,25 @@
     .quote-table .space-guide-row td {
       text-align: left;
       background: #f8fafc;
-      padding: 5px 7px;
+      padding: 7px 9px;
       color: #0369a1;
-      font-size: 8px;
-      line-height: 1.3;
+      font-size: 8.5px;
+      line-height: 1.4;
     }
 
-    /* 결제 요약 리스트 */
+    /* 결제 요약 박스 */
     .price-summary-box {
-      margin-top: 5px;
-      border-top: 1px dashed #cbd5e1;
-      padding-top: 5px;
+      margin-top: 8px;
+      border-top: 1.5px dashed #cbd5e1;
+      padding-top: 8px;
     }
     .summary-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 700;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
     .summary-line:last-child {
       margin-bottom: 0;
@@ -274,23 +260,23 @@
     .tag-badge {
       background: #e0f2fe;
       color: #0369a1;
-      padding: 1px 4px;
-      border-radius: 3px;
-      font-size: 8px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 9px;
       font-weight: 600;
-      margin-right: 4px;
+      margin-right: 5px;
     }
 
-    /* 하단 정식 공지사항 */
+    /* 하단 공지사항 */
     .footer-box {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-left: 4px solid #0f4c81;
-      border-radius: 4px;
-      padding: 6px 10px;
-      font-size: 8.5px;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 9px;
       color: #475569;
-      line-height: 1.35;
+      line-height: 1.4;
       flex-shrink: 0;
     }
   </style>
@@ -320,31 +306,33 @@
     <div class="col-left">
       
       {% if photo_base64 %}
-      <div class="card-box photo-card">
+      <div class="card-box" style="padding:8px;">
         <div class="photo-wrapper">
           <img src="data:image/jpeg;base64,{{ photo_base64 }}" alt="현장 사진">
         </div>
         <div class="photo-caption">[ 현장 정밀 진단 ] {{ data.client_name }} 실사 전경</div>
       </div>
       {% else %}
-      <div class="no-photo-banner">
-        <div class="no-photo-badge">CESCO TOTAL CARE SYSTEM</div>
-        <div class="no-photo-title">🛡️ 세스코 환경위생 안심 공간 케어</div>
-        <div class="no-photo-desc">
-          전문 컨설턴트의 정밀 진단을 거쳐 공간별 위해 요소를 완벽히 차단하고 쾌적한 위생 환경을 상시 유지합니다.
+      <div class="card-box" style="padding:0; border:none; background:transparent;">
+        <div class="no-photo-banner">
+          <div class="no-photo-badge">CESCO TOTAL CARE SYSTEM</div>
+          <div class="no-photo-title">🛡️ 세스코 환경위생 안심 공간 케어</div>
+          <div class="no-photo-desc">
+            전문 컨설턴트의 정밀 진단을 거쳐 공간별 위해 요소를 완벽히 차단하고 쾌적한 위생 환경을 상시 유지합니다.
+          </div>
         </div>
       </div>
       {% endif %}
 
       <!-- 1. 현장 진단 -->
-      <div class="card-box left-card">
+      <div class="card-box">
         <div class="card-title">1. 현장 진단 및 환경 분석 소견</div>
         <div class="alert-chip">⚠️ {{ data.diagnosis_alert }}</div>
         <div class="diag-text">{{ data.diagnosis_description }}</div>
       </div>
 
       <!-- 2. 정기 케어 솔루션 -->
-      <div class="card-box left-card">
+      <div class="card-box">
         <div class="card-title">2. 세스코 정기 케어 솔루션</div>
         {% for care in data.care_solutions %}
         <div class="care-item">
@@ -357,7 +345,7 @@
       </div>
 
       <!-- 3. 도입 기대 효과 -->
-      <div class="card-box left-card">
+      <div class="card-box">
         <div class="card-title">3. 도입 기대 효과 및 공간 가치</div>
         {% for exp in data.expected_values %}
         <div class="exp-item">
@@ -375,7 +363,7 @@
     <div class="col-right">
 
       <!-- 4. 맞춤 솔루션 설계 표 -->
-      <div class="card-box" style="flex: 1.1;">
+      <div class="card-box">
         <div class="card-title">4. 공간별 맞춤 솔루션 설계</div>
         <table class="quote-table">
           <thead>
@@ -392,7 +380,7 @@
               <td><strong>{{ item.zone }}</strong></td>
               <td>{{ item.device }}{% if item.color %} <span style="font-size:8px; color:#64748b;">({{ item.color }})</span>{% endif %}</td>
               <td><strong>{{ item.qty }}대</strong></td>
-              <td style="font-size:8px; text-align: left; padding-left: 4px;">{{ item.scent }}</td>
+              <td style="font-size:8px; text-align: left; padding-left: 5px;">{{ item.scent }}</td>
             </tr>
             {% endfor %}
             {% if data.space_guides %}
@@ -410,29 +398,29 @@
       </div>
 
       <!-- 5. 견적 및 프로모션 안내 -->
-      <div class="card-box" style="flex: 1;">
-        <div class="card-title">5. 견적 및 프로모션 상세 <span style="font-size:8.5px; font-weight:normal; color:#64748b;">(VAT 포함)</span></div>
+      <div class="card-box">
+        <div class="card-title">5. 견적 및 프로모션 상세 <span style="font-size:9px; font-weight:normal; color:#64748b;">(VAT 포함)</span></div>
         
-        <table class="quote-table" style="margin-bottom: 2px;">
+        <table class="quote-table" style="margin-bottom: 4px;">
           <thead>
             <tr>
-              <th style="text-align: left; padding-left: 5px;">제안 품목 및 프로모션</th>
-              <th style="width: 26%; text-align: right; padding-right: 5px;">월 제안금액</th>
+              <th style="text-align: left; padding-left: 6px;">제안 품목 및 프로모션</th>
+              <th style="width: 28%; text-align: right; padding-right: 6px;">월 제안금액</th>
             </tr>
           </thead>
           <tbody>
             {% for block in data.pricing_blocks %}
             <tr>
-              <td style="text-align: left; padding-left: 5px;">
+              <td style="text-align: left; padding-left: 6px;">
                 <strong>{{ block.product_name }}</strong>
                 {% if block.original_price %}
-                <span style="font-size:7.5px; color:#94a3b8; text-decoration: line-through; margin-left: 2px;">(정상가 {{ block.original_price }})</span>
+                <span style="font-size:7.5px; color:#94a3b8; text-decoration: line-through; margin-left: 3px;">(정상가 {{ block.original_price }})</span>
                 {% endif %}
                 {% if block.promo_text %}
-                <div style="font-size:8px; color:#dc2626; font-weight:700;">🎁 {{ block.promo_text }}</div>
+                <div style="font-size:8.5px; color:#dc2626; font-weight:700; margin-top:2px;">🎁 {{ block.promo_text }}</div>
                 {% endif %}
               </td>
-              <td style="text-align: right; padding-right: 5px; font-weight: 700; color: #0f4c81; font-size: 9.5px;">
+              <td style="text-align: right; padding-right: 6px; font-weight: 700; color: #0f4c81; font-size: 10px;">
                 {{ block.discounted_price }}
               </td>
             </tr>
@@ -448,7 +436,7 @@
               <span class="tag-badge">{{ row.badge }}</span>
               <span>{{ row.label }}</span>
             </div>
-            <div style="color: #0f4c81; font-size: 10px;">{{ row.price_display }}</div>
+            <div style="color: #0f4c81; font-size: 11px;">{{ row.price_display }}</div>
           </div>
           {% endfor %}
         </div>
