@@ -199,7 +199,7 @@ COMMITMENT_PERIODS = ["36개월", "60개월", "72개월"]
 CONTRACT_PERIODS = ["60개월", "72개월", "해당없음"]
 
 PROMO_DISCOUNT_TYPES = ["선택안함", "렌탈료 반값", "렌탈료 면제"]
-PROMO_MONTH_LIST = [f"{i}개월" for i in range(1, 13)]
+PROMO_MONTH_LIST = ["선택안함"] + [f"{i}개월" for i in range(1, 13)]
 
 def get_deepseek_api_key():
     if "DEEPSEEK_API_KEY" in st.secrets:
@@ -403,7 +403,7 @@ with col1:
         st.markdown("<p style='font-size:12.5px; font-weight:700; margin:8px 0 4px 0; color:#334155;'>개별 프로모션 조건 선택 (선택)</p>", unsafe_allow_html=True)
         c_pr_m, c_pr_t = st.columns([1, 1])
         with c_pr_m:
-            f_promo_month = st.selectbox("프로모션 개월수", PROMO_MONTH_LIST, index=3)
+            f_promo_month = st.selectbox("프로모션 개월수", PROMO_MONTH_LIST, index=0)
         with c_pr_t:
             f_promo_type = st.selectbox("할인 혜택 구분", PROMO_DISCOUNT_TYPES, index=0)
 
@@ -432,8 +432,13 @@ with col1:
                 final_scent_spec = " / ".join(spec_parts) if spec_parts else "표준 케어 사양"
 
                 final_promo_str = ""
-                if f_promo_type != "선택안함":
+                if f_promo_type != "선택안함" and f_promo_month != "선택안함":
                     final_promo_str = f"{f_promo_month} {f_promo_type}"
+                elif f_promo_type != "선택안함":
+                    final_promo_str = f"{f_promo_type}"
+                elif f_promo_month != "선택안함":
+                    final_promo_str = f"{f_promo_month} 프로모션"
+
                 if f_promo_custom.strip():
                     if final_promo_str:
                         final_promo_str += f" / {f_promo_custom.strip()}"
