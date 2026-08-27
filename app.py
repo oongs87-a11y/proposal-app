@@ -26,35 +26,147 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    * { font-family: 'Pretendard', sans-serif; }
-    .main-header {
-        background: linear-gradient(135deg, #002b49 0%, #0f4c81 100%);
-        padding: 20px 24px;
-        border-radius: 12px;
-        color: white;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 14px rgba(0,43,73,0.15);
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+    
+    html, body, [class*="css"] {
+        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif !important;
+        background-color: #f8fafc;
+        color: #1e293b;
     }
-    .main-header h1 {
-        font-size: 22px;
-        font-weight: 700;
-        margin: 0;
+
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 4rem !important;
+        max-width: 1200px !important;
+    }
+
+    /* 프리미엄 헤더 배너 */
+    .hero-header {
+        background: linear-gradient(135deg, #0b2545 0%, #133c55 50%, #1e5f74 100%);
+        border-radius: 16px;
+        padding: 28px 32px;
+        color: #ffffff;
+        box-shadow: 0 10px 25px -5px rgba(11, 37, 69, 0.2), 0 8px 10px -6px rgba(11, 37, 69, 0.1);
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .hero-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(0, 168, 232, 0.25) 0%, transparent 70%);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: #90e0ef;
+        margin-bottom: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .hero-title {
+        font-size: 24px !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
         color: #ffffff !important;
+        margin: 0 0 6px 0 !important;
     }
-    .main-header p {
-        font-size: 13px;
-        color: #b0cbe2;
-        margin: 4px 0 0 0;
+    .hero-sub {
+        font-size: 13px !important;
+        color: #cbd5e1 !important;
+        font-weight: 400;
+        margin: 0 !important;
     }
-    .stDownloadButton > button {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-        color: white !important;
+
+    /* 카드 섹션 */
+    .premium-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+    }
+    .card-label {
+        font-size: 15px;
         font-weight: 700;
-        border: none;
+        color: #0f172a;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* 입력 필드 스타일 */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > div,
+    .stTextArea textarea {
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        font-size: 13px !important;
+        transition: all 0.2s ease !important;
+    }
+    .stTextInput > div > div > input:focus,
+    .stTextArea textarea:focus {
+        border-color: #0077b6 !important;
+        box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15) !important;
+        background-color: #ffffff !important;
+    }
+
+    /* 버튼 스타일 */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%) !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 14px 20px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3) !important;
+        transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 16px rgba(0, 119, 182, 0.4) !important;
+    }
+
+    .stDownloadButton > button {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 14px 20px !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+        transition: transform 0.15s ease !important;
+    }
+    .stDownloadButton > button:hover {
+        transform: translateY(-1px) !important;
+    }
+
+    /* 등록된 기기 리스트 카드 */
+    .item-list-row {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #0077b6;
         border-radius: 8px;
-        padding: 12px 20px;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        padding: 12px 14px;
+        margin-bottom: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -199,40 +311,42 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
         
     return pdf_bytes
 
+# 프리미엄 헤더 영역
 st.markdown("""
-<div class="main-header">
-    <h1>🛡️ CESCO 환경 솔루션 제안·견적 시스템</h1>
-    <p>현장 진단부터 맞춤형 솔루션 견적서 즉시 발행</p>
+<div class="hero-header">
+    <div class="hero-badge">CESCO PROFESSIONAL CARE</div>
+    <div class="hero-title">🛡️ 세스코 환경 솔루션 견적·제안 시스템</div>
+    <div class="hero-sub">현장 정밀 진단부터 맞춤형 패키지 견적서 발행까지 원스톱 지원</div>
 </div>
 """, unsafe_allow_html=True)
 
 if "installed_items" not in st.session_state:
     st.session_state["installed_items"] = []
 
-col1, col2 = st.columns([1, 1], gap="large")
+col1, col2 = st.columns([1.05, 0.95], gap="large")
 
 with col1:
-    st.subheader("1. 기본 정보 & 업종 선택")
-    client_name = st.text_input("업체명/고객명", placeholder="예: 연세바른병원, 스타벅스 압구정점, 홍길동 고객님 등")
+    st.markdown('<div class="premium-card"><div class="card-label">🏢 1. 기본 정보 & 업종 선택</div>', unsafe_allow_html=True)
+    client_name = st.text_input("업체명 / 고객명", placeholder="예: 연세바른병원, 스타벅스 강남점 등")
     biz_type = st.selectbox("업종 선택 (업종별 맞춤 설명 자동 생성)", BUSINESS_TYPES)
     
-    uploaded_photo = st.file_uploader("현장 전경 사진 업로드", type=["jpg", "jpeg", "png"])
+    uploaded_photo = st.file_uploader("📸 현장 전경 사진 업로드 (선택)", type=["jpg", "jpeg", "png"])
     if uploaded_photo:
-        st.image(uploaded_photo, caption="선택한 현장 사진", width=260)
+        st.image(uploaded_photo, caption="선택된 현장 사진", width=260)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.subheader("2. 현장 진단 (원클릭 체크)")
-    st.caption("※ 체크할 내용이 없다면 바로 아래 특이사항 메모에 적어주세요.")
+    st.markdown('<div class="premium-card"><div class="card-label">🔍 2. 현장 환경 정밀 진단</div>', unsafe_allow_html=True)
+    st.caption("※ 현장 상황에 해당하는 항목을 체크해 주세요.")
     
     col_chk1, col_chk2 = st.columns(2)
     with col_chk1:
-        c1 = st.checkbox("하수구/배관 악취", value=False)
-        c2 = st.checkbox("습기·곰팡이 냄새", value=False)
-        c3 = st.checkbox("음식물/유기물 부패취", value=False)
+        c1 = st.checkbox("하수구 / 배관 악취", value=False)
+        c2 = st.checkbox("습기 · 곰팡이 냄새", value=False)
+        c3 = st.checkbox("음식물 / 유기물 부패취", value=False)
     with col_chk2:
-        c4 = st.checkbox("화장실 요석/암모니아취", value=False)
-        c5 = st.checkbox("소독약/화학 약품 냄새", value=False)
-        c6 = st.checkbox("환기 부족/밀폐 답답함", value=False)
+        c4 = st.checkbox("화장실 요석 / 암모니아취", value=False)
+        c5 = st.checkbox("소독약 / 화학 약품 냄새", value=False)
+        c6 = st.checkbox("환기 부족 / 밀폐 답답함", value=False)
 
     selected_odors = []
     if c1: selected_odors.append("하수구 냄새")
@@ -244,14 +358,14 @@ with col1:
 
     custom_notes = st.text_input(
         "추가 특이사항 메모", 
-        placeholder="체크할 내용이 없으면 이곳에 적어주세요 (예: 주방 환기 부족, 여성 고객 위주 등)"
+        placeholder="체크 외 특이사항 (예: 주방 환기 불량, 여성 고객 중심 공간 등)"
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.subheader("3. 설치 구역 및 기기·가격 추가")
+    st.markdown('<div class="premium-card"><div class="card-label">⚙️ 3. 설치 구역 및 기기·조건 설정</div>', unsafe_allow_html=True)
     
     with st.form("item_add_form", clear_on_submit=True):
-        f_zone = st.text_input("설치 구역명", placeholder="예: 메인 홀, 주방, 진료실, 탈의실 등")
+        f_zone = st.text_input("설치 구역명", placeholder="예: 메인 홀, 원장실, 남/여 화장실 등")
         
         c_cat_col, c_cycle_col = st.columns([1, 1])
         with c_cat_col:
@@ -267,9 +381,9 @@ with col1:
             
         c_dev_col, c_color_col = st.columns([2, 1])
         with c_dev_col:
-            f_dev = st.text_input("제품 이름 (직접 입력)", placeholder="예: 판테온 트루살균 20평형, 에어퍼퓸200 등")
+            f_dev = st.text_input("제품 이름 (직접 입력)", placeholder="예: 판테온 트루살균 20평형, 에어퍼퓸200")
         with c_color_col:
-            f_color = st.text_input("제품 색상", placeholder="예: 화이트, 블랙 등")
+            f_color = st.text_input("제품 색상", placeholder="예: 화이트, 다크그레이")
         
         c_p1, c_p2, c_p3 = st.columns(3)
         with c_p1:
@@ -279,10 +393,10 @@ with col1:
         with c_p3:
             f_sale = st.number_input("할인가(대당/월)", min_value=0, value=0, step=1000)
 
-        f_spec = st.text_input("선택 조향 / 상세 사양 (선택)", placeholder="예: 프리지아 향, 살균 케어, 썸머 향")
-        f_promo_note = st.text_input("개별 프로모션 문구 (선택)", placeholder="예: 9개월 렌탈료 반값, 4개월 반값 프로모션")
+        f_spec = st.text_input("선택 조향 / 상세 사양 (선택)", placeholder="예: 프리지아 향, 살균 케어, 피톤치드 릴렉스")
+        f_promo_note = st.text_input("개별 프로모션 문구 (선택)", placeholder="예: 9개월 렌탈료 반값, 설치비 면제")
         
-        add_btn = st.form_submit_button("➕ 목록에 추가하기", use_container_width=True)
+        add_btn = st.form_submit_button("➕ 기기 목록에 추가", use_container_width=True)
         
         if add_btn:
             if not f_dev:
@@ -322,7 +436,7 @@ with col1:
                 st.rerun()
 
     if st.session_state["installed_items"]:
-        st.write("**현재 설계된 기기 및 견적 목록:**")
+        st.markdown("<p style='font-size:13px; font-weight:700; margin:12px 0 6px 0;'>📋 설계된 기기 내역</p>", unsafe_allow_html=True)
         total_orig_calc = 0
         total_sale_calc = 0
         for idx, item in enumerate(st.session_state["installed_items"]):
@@ -333,36 +447,41 @@ with col1:
 
             c_i1, c_i2 = st.columns([5, 1])
             with c_i1:
-                color_text = f" [{item['color']}]" if item.get("color") else ""
-                st.markdown(f"**[{item['zone']}]** {item['device']}{color_text} ({item['qty']}대) | 정상 {item_orig_sum:,}원 ➔ **할인 {item_sale_sum:,}원**")
-                sub_infos = []
-                if item.get("scent"):
-                    sub_infos.append(f"⚙️ **사양/조건:** `{item['scent']}`")
-                if item.get("promo_text"):
-                    sub_infos.append(f"🎁 **프로모션:** <span style='color:#e11d48; font-weight:bold;'>{item['promo_text']}</span>")
-                if sub_infos:
-                    st.markdown("&nbsp;&nbsp;└ " + " | ".join(sub_infos), unsafe_allow_html=True)
+                color_text = f" <span style='color:#64748b;'>({item['color']})</span>" if item.get("color") else ""
+                st.markdown(f"""
+                <div class="item-list-row">
+                    <div style="font-weight:700; font-size:14px; color:#0f172a;">
+                        [{item['zone']}] {item['device']}{color_text} · {item['qty']}대
+                        <span style="float:right; font-weight:700; color:#0077b6;">월 {item_sale_sum:,}원</span>
+                    </div>
+                    <div style="font-size:12px; color:#64748b; margin-top:4px;">
+                        ⚙️ {item.get('scent', '')}
+                    </div>
+                    {f'<div style="font-size:12px; color:#e11d48; font-weight:600; margin-top:2px;">🎁 {item["promo_text"]}</div>' if item.get("promo_text") else ''}
+                </div>
+                """, unsafe_allow_html=True)
 
             with c_i2:
                 if st.button("삭제", key=f"del_{idx}"):
                     st.session_state["installed_items"].pop(idx)
                     st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.subheader("4. 영업 특약 및 프로모션 안내 (사은품 / 계약조건 자유 기재)")
+    st.markdown('<div class="premium-card"><div class="card-label">🎁 4. 영업 특약 & 프로모션 메모</div>', unsafe_allow_html=True)
     promo_notes = st.text_area(
-        "사은품, 결제 플로우, 프로모션 특약 자유 메모",
-        placeholder="현장에서 제공하는 혜택을 편하게 적어주세요.\n\n예시 1:\n- 계약 시 손소독제 2세트 사은품 무상 증정\n- 초기 설치비/가입비 전액 면제 혜택\n\n예시 2:\n- 9개월 렌탈료 반값 프로모션 적용\n- 핸드제닉 손세정제 사은품 제공",
-        height=120
+        "사은품, 결제 방식, 특약 조건 메모",
+        placeholder="고객에게 제공할 프로모션 및 특약 조건을 입력하세요.\n예시:\n- 계약 체결 시 전용 손소독제 2세트 증정\n- 초기 가입비 및 설치비 전액 면제",
+        height=100
     )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    generate_btn = st.button("🚀 맞춤 제안서 자동 생성", use_container_width=True, type="primary")
+    generate_btn = st.button("🚀 AI 맞춤 제안서 자동 생성", use_container_width=True, type="primary")
 
 if generate_btn:
     if not client_name or not st.session_state["installed_items"]:
-        st.warning("업체명과 기기를 최소 1개 이상 입력해 주세요.")
+        st.warning("⚠️ 업체명과 기기를 최소 1개 이상 입력해 주세요.")
     else:
-        with st.spinner(f"AI가 [{biz_type}] 업종에 맞춤화된 특약 제안서를 작성 중입니다..."):
+        with st.spinner(f"🤖 DeepSeek AI가 [{biz_type}] 맞춤 솔루션을 설계 중입니다..."):
             try:
                 ai_data = call_deepseek_smart(client_name, biz_type, selected_odors, custom_notes, st.session_state["installed_items"], promo_notes)
                 
@@ -414,35 +533,35 @@ if generate_btn:
                 
                 st.session_state["proposal_data"] = ai_data
                 st.session_state["uploaded_photo_bytes"] = uploaded_photo.getvalue() if uploaded_photo else None
-                st.success("제안서 자동 완성 성공!")
+                st.success("🎉 제안서가 성공적으로 생성되었습니다!")
             except Exception as e:
                 st.error(f"생성 실패: {e}")
 
 with col2:
-    st.subheader("2. 제안서 미리보기 및 PDF 발급")
+    st.markdown('<div class="premium-card"><div class="card-label">📄 5. 제안서 미리보기 & PDF 발급</div>', unsafe_allow_html=True)
     if "proposal_data" in st.session_state:
         data = st.session_state["proposal_data"]
         
-        st.markdown(f"### {data.get('client_name')} 제안서 ({biz_type})")
-        st.info(f"**진단 요약:** {data.get('diagnosis_alert')}")
+        st.markdown(f"#### 🏢 {data.get('client_name')} <span style='font-size:14px; font-weight:normal; color:#64748b;'>({biz_type})</span>", unsafe_allow_html=True)
+        st.info(f"**🔍 진단 요약:** {data.get('diagnosis_alert')}")
         
-        with st.expander("📌 결제 요약 및 안내사항 미리보기", expanded=True):
+        with st.expander("💳 결제 요약 및 특약 사항", expanded=True):
             for row in data.get("summary_rows", []):
                 st.write(f"- {row.get('label')}: **{row.get('price_display')}** ({row.get('badge', '')})")
             st.markdown("---")
-            st.write("**하단 안내 박스 문구:**")
-            st.info(data.get("footer_notice"))
+            st.caption(f"**안내:** {data.get('footer_notice')}")
 
         try:
             pdf_bytes = build_pdf(data, st.session_state.get("uploaded_photo_bytes"))
             st.download_button(
-                label="📥 A4 제안서 PDF 즉시 다운로드",
+                label="📥 A4 공식 제안서 PDF 다운로드",
                 data=pdf_bytes,
-                file_name=f"{client_name}_환경솔루션_{datetime.now().strftime('%Y%m%d')}.pdf",
+                file_name=f"{client_name}_세스코제안서_{datetime.now().strftime('%Y%m%d')}.pdf",
                 mime="application/pdf",
                 use_container_width=True
             )
         except Exception as e:
             st.error(f"PDF 렌더링 에러: {e}")
     else:
-        st.info("좌측에 정보를 입력하고 생성 버튼을 누르면 다운로드 버튼이 활성화됩니다.")
+        st.info("👈 좌측에서 고객 정보와 기기를 설정한 후 **'AI 맞춤 제안서 자동 생성'**을 클릭하세요.")
+    st.markdown('</div>', unsafe_allow_html=True)
