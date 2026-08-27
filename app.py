@@ -1,10 +1,20 @@
 import streamlit as st
 import os
+import requests
+import json
 from datetime import datetime
-from deepseek_service import generate_proposal_content
-from pdf_generator import build_pdf
+import io
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
-# 페이지 기본 설정 (와이드 모드 & 모바일 친화적 레이아웃)
+# -------------------------------------------------------------
+# 1. 페이지 설정 및 CESCO 프리미엄 비즈니스 스타일 CSS
+# -------------------------------------------------------------
 st.set_page_config(
     page_title="세스코 환경위생 솔루션 견적·제안 시스템",
     page_icon="🛡️",
@@ -12,97 +22,210 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 모던 프리미엄 스타일 CSS 주입
 st.markdown("""
 <style>
-    /* 전체 폰트 및 배경 감성 */
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-    * {
-        font-family: 'Pretendard', sans-serif;
-    }
+    * { font-family: 'Pretendard', sans-serif; }
     
-    /* 헤더 배너 스타일 */
     .hero-banner {
         background: linear-gradient(135deg, #0f4c81 0%, #002b49 100%);
-        padding: 24px 28px;
-        border-radius: 16px;
+        padding: 22px 28px;
+        border-radius: 14px;
         color: white;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         box-shadow: 0 8px 20px rgba(0,43,73,0.15);
     }
     .hero-banner h1 {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
         margin: 0 0 6px 0;
         color: #ffffff !important;
         letter-spacing: -0.5px;
     }
-    .hero-banner p {
-        font-size: 14px;
-        color: #b0cbe2;
-        margin: 0;
-    }
+    .hero-banner p { font-size: 13px; color: #b0cbe2; margin: 0; }
 
-    /* 카드형 컨테이너 */
     .section-card {
         background: #ffffff;
         border: 1px solid #eef2f6;
-        border-radius: 14px;
-        padding: 20px;
-        margin-bottom: 18px;
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 16px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
     
     .section-title {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 700;
         color: #1e293b;
-        margin-bottom: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        margin-bottom: 12px;
         border-bottom: 2px solid #f1f5f9;
-        padding-bottom: 8px;
+        padding-bottom: 6px;
     }
 
-    /* 메인 강조 버튼 스타일 */
     .stButton > button {
         background: linear-gradient(135deg, #0072ce 0%, #0f4c81 100%);
         color: white !important;
         font-weight: 700;
         border: none;
-        border-radius: 10px;
-        padding: 12px 24px;
-        font-size: 16px;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-size: 15px;
         box-shadow: 0 4px 14px rgba(0, 114, 206, 0.3);
         transition: all 0.2s ease;
     }
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 114, 206, 0.4);
-    }
 
-    /* PDF 다운로드 버튼 스타일 */
     .stDownloadButton > button {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white !important;
         font-weight: 700;
         border: none;
-        border-radius: 10px;
-        padding: 14px 24px;
-        font-size: 16px;
+        border-radius: 8px;
+        padding: 14px 20px;
+        font-size: 15px;
         box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
     }
 
-    /* Streamlit 기본 여백 최적화 */
-    .block-container {
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
+    .block-container { padding-top: 1.5rem; padding-bottom: 3rem; }
 </style>
 """, unsafe_allow_html=True)
 
-# 상단 배너 타이틀
+# -------------------------------------------------------------
+# 2. 폰트 및 핵심 로직 (DeepSeek 연동 + PDF 빌더 통합)
+# -------------------------------------------------------------
+def get_deepseek_api_key():
+    if "DEEPSEEK_API_KEY" in st.secrets:
+        return st.secrets["DEEPSEEK_API_KEY"]
+    return os.environ.get("DEEPSEEK_API_KEY", "")
+
+def generate_ai_proposal(client_name, biz_type, issues, memo, devices):
+    api_key = get_deepseek_api_key()
+    if not api_key:
+        return {
+            "diagnosis_alert": f"{client_name}의 {biz_type} 맞춤 종합 위생 환경 케어가 필요합니다.",
+            "solution_plan": "구역별 최적 설비 배치 및 CESCO 정기 솔루션 관리를 통해 문제를 해결합니다.",
+            "effect_points": ["유해 바이러스 및 악취 원인 차단", "고객 방문 만족도 개선", "브랜드 안심 이미지 강화"]
+        }
+    
+    url = "https://api.deepseek.com/v1/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}"
+    }
+    
+    prompt = f"""당신은 세스코(CESCO)의 최고 환경위생 솔루션 컨설턴트입니다.
+고객명: {client_name}
+업종: {biz_type}
+진단된 현장 문제: {', '.join(issues) if issues else '일반 환경 정화 필요'}
+추가 메모: {memo}
+제안 장비/설비: {', '.join(devices)}
+
+위 정보를 바탕으로 고객에게 신뢰를 주는 공식 제안서 텍스트를 작성하세요.
+반드시 아래 JSON 형식으로만 응답하세요:
+{{
+  "diagnosis_alert": "현장 진단 종합 의견 (2-3문장, 신뢰감 있고 전문적인 어조)",
+  "solution_plan": "맞춤형 환경 솔루션 계획 및 관리 전략 (2-3문장)",
+  "effect_points": ["기대효과 1", "기대효과 2", "기대효과 3"]
+}}"""
+
+    payload = {
+        "model": "deepseek-chat",
+        "messages": [
+            {"role": "system", "content": "You are a professional CESCO hygiene consultant. Output valid JSON only."},
+            {"role": "user", "content": prompt}
+        ],
+        "response_format": {"type": "json_object"},
+        "temperature": 0.3
+    }
+
+    try:
+        res = requests.post(url, headers=headers, json=payload, timeout=25)
+        if res.status_code == 200:
+            return json.loads(res.json()["choices"][0]["message"]["content"])
+    except Exception:
+        pass
+        
+    return {
+        "diagnosis_alert": f"{client_name}의 {biz_type} 맞춤 종합 위생 환경 케어가 필요합니다.",
+        "solution_plan": "구역별 최적 설비 배치 및 CESCO 정기 솔루션을 통해 쾌적성을 극대화합니다.",
+        "effect_points": ["실내 바이러스 및 냄새 원인 근본 제거", "방문 고객 만족도 증대", "청결 안심 공간 구축"]
+    }
+
+def create_pdf(data, photo_bytes=None):
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        leftMargin=36,
+        rightMargin=36,
+        topMargin=36,
+        bottomMargin=36
+    )
+
+    try:
+        if os.path.exists("NanumGothic.ttf"):
+            pdfmetrics.registerFont(TTFont('KoreanFont', 'NanumGothic.ttf'))
+            font_name = 'KoreanFont'
+        else:
+            font_name = 'Helvetica'
+    except Exception:
+        font_name = 'Helvetica'
+
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontName=font_name, fontSize=18, textColor=colors.HexColor('#002B49'), spaceAfter=10)
+    sub_style = ParagraphStyle('Sub', parent=styles['Normal'], fontName=font_name, fontSize=10, textColor=colors.HexColor('#4A5568'), leading=14)
+    sec_style = ParagraphStyle('Sec', parent=styles['Heading2'], fontName=font_name, fontSize=12, textColor=colors.HexColor('#0072CE'), spaceBefore=8, spaceAfter=6)
+    body_style = ParagraphStyle('Body', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#2D3748'), leading=13)
+    bold_style = ParagraphStyle('Bold', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#002B49'), fontName=font_name, leading=13)
+
+    elements = []
+    elements.append(Paragraph("<b>CESCO 환경위생 맞춤 솔루션 견적서</b>", title_style))
+    elements.append(Paragraph(f"<b>수신:</b> {data['client_name']} 귀하 ({data['biz_type']}) &nbsp;&nbsp;|&nbsp;&nbsp; <b>발행일:</b> {data['date']}", sub_style))
+    elements.append(Spacer(1, 10))
+
+    elements.append(Paragraph("1. 현장 환경위생 진단 소견", sec_style))
+    elements.append(Paragraph(data['diagnosis_alert'], body_style))
+    elements.append(Spacer(1, 8))
+
+    elements.append(Paragraph("2. 맞춤 솔루션 구성 및 관리 계획", sec_style))
+    elements.append(Paragraph(data['solution_plan'], body_style))
+    elements.append(Spacer(1, 8))
+
+    elements.append(Paragraph("3. 견적 상세 내역", sec_style))
+    table_data = [["구역 및 적용 솔루션", "월 정기 관리비"]]
+    for r in data['summary_rows']:
+        table_data.append([r['label'], r['price_display']])
+    table_data.append(["총 월 관리비 (VAT 별도)", data['total_monthly']])
+
+    t = Table(table_data, colWidths=[360, 160])
+    t.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#002B49')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, -1), font_name),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#CBD5E1')),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#F1F5F9')),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+    ]))
+    elements.append(t)
+    elements.append(Spacer(1, 10))
+
+    elements.append(Paragraph("4. 특별 프로모션 & 조건", sec_style))
+    elements.append(Paragraph(f"• 약정 혜택: {data['promo_discount']}", body_style))
+    elements.append(Paragraph(f"• 특별 증정: {data['free_gift']}", body_style))
+    elements.append(Paragraph(f"• 안내 사항: {data['special_terms']}", body_style))
+    elements.append(Spacer(1, 12))
+    elements.append(Paragraph(data['footer_notice'], ParagraphStyle('Foot', parent=body_style, fontSize=8, textColor=colors.HexColor('#718096'))))
+
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer.getvalue()
+
+# -------------------------------------------------------------
+# 3. 화면 렌더링 UI
+# -------------------------------------------------------------
 st.markdown("""
 <div class="hero-banner">
     <h1>🛡️ CESCO Solution Suite</h1>
@@ -114,16 +237,9 @@ col_left, col_right = st.columns([1.1, 0.9], gap="large")
 
 with col_left:
     st.markdown('<div class="section-card"><div class="section-title">📍 1. 기본 정보 & 업종 선택</div>', unsafe_allow_html=True)
-    client_name = st.text_input("업체명 / 고객명", placeholder="예: 연세바른병원, 스타벅스 강남점, 홍길동 고객님")
-    
-    biz_type = st.selectbox(
-        "업종 구분 (AI 진단 프롬프트에 자동 반영)",
-        ["병원 / 의원 / 클리닉", "일반 음식점 / 카페", "사무실 / 오피스", "어린이집 / 학원", "호텔 / 숙박시설", "물류 / 제조 시설", "기타 사업장"]
-    )
-    
-    uploaded_photo = st.file_uploader("📸 현장 전경/문제 구역 사진 (선택)", type=["jpg", "jpeg", "png"])
-    if uploaded_photo:
-        st.session_state["uploaded_photo"] = uploaded_photo.read()
+    client_name = st.text_input("업체명 / 고객명", placeholder="예: 연세바른병원, 스타벅스 강남점")
+    biz_type = st.selectbox("업종 구분", ["병원 / 의원 / 클리닉", "일반 음식점 / 카페", "사무실 / 오피스", "어린이집 / 학원", "호텔 / 숙박시설", "기타 사업장"])
+    uploaded_photo = st.file_uploader("📸 현장 전경 사진 (선택)", type=["jpg", "jpeg", "png"])
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="section-card"><div class="section-title">🔍 2. 현장 환경 진단 (원클릭 체크)</div>', unsafe_allow_html=True)
@@ -131,19 +247,17 @@ with col_left:
     with c1:
         chk_drain = st.checkbox("하수구 / 배관 악취")
         chk_mold = st.checkbox("습기 · 곰팡이 냄새")
-        chk_food = st.checkbox("음식물 / 유기물 부패취")
+        chk_food = st.checkbox("음식물 부패취")
     with c2:
         chk_toilet = st.checkbox("화장실 요석 / 암모니아")
         chk_chem = st.checkbox("소독약 / 화학 약품취")
-        chk_vent = st.checkbox("환기 부족 / 밀폐 답답함")
-
-    diagnosis_memo = st.text_area("추가 특이사항 메모", placeholder="예: 주방 환기 불량, 여성 고객 중심 매장으로 향기 케어 필수 등", height=70)
+        chk_vent = st.checkbox("환기 부족 / 답답함")
+    diagnosis_memo = st.text_area("추가 특이사항 메모", placeholder="현장 특이사항 및 요청사항 입력", height=70)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="section-card"><div class="section-title">⚙️ 3. 설치 구역 및 솔루션 기기 설정</div>', unsafe_allow_html=True)
-    
+    st.markdown('<div class="section-card"><div class="section-title">⚙️ 3. 설치 구역 및 기기 설정</div>', unsafe_allow_html=True)
     if "rows" not in st.session_state:
-        st.session_state["rows"] = [{"area": "홀 / 메인 공간", "device": "에어제닉 (자동분사 탈취기)", "cycle": "1개월", "fee": 35000}]
+        st.session_state["rows"] = [{"area": "메인 로비/홀", "device": "에어제닉 (자동분사 탈취기)", "cycle": "1개월", "fee": 35000}]
 
     def add_row():
         st.session_state["rows"].append({"area": "신규 구역", "device": "UV 파워 공기살균기", "cycle": "1개월", "fee": 45000})
@@ -151,103 +265,83 @@ with col_left:
     for idx, row in enumerate(st.session_state["rows"]):
         r1, r2, r3, r4 = st.columns([1.2, 1.8, 1.0, 1.2])
         row["area"] = r1.text_input(f"구역 #{idx+1}", row["area"], key=f"area_{idx}")
-        row["device"] = r2.selectbox(f"설비 #{idx+1}", ["에어제닉 (자동분사 탈취기)", "UV 파워 공기살균기", "센스후레쉬 (소변기 케어)", "스마트 피톤치드 디퓨저", "실내 해충 안심 솔루션"], index=0, key=f"dev_{idx}")
-        row["cycle"] = r3.selectbox(f"관리주기 #{idx+1}", ["1개월", "2개월", "3개월", "특약관리"], index=0, key=f"cyc_{idx}")
+        row["device"] = r2.selectbox(f"설비 #{idx+1}", ["에어제닉 (자동분사 탈취기)", "UV 파워 공기살균기", "센스후레쉬 (소변기 케어)", "스마트 피톤치드 디퓨저"], index=0, key=f"dev_{idx}")
+        row["cycle"] = r3.selectbox(f"관리주기 #{idx+1}", ["1개월", "2개월", "3개월"], index=0, key=f"cyc_{idx}")
         row["fee"] = r4.number_input(f"월 관리비 #{idx+1}", value=row["fee"], step=1000, key=f"fee_{idx}")
 
     st.button("➕ 설치 구역/기기 추가", on_click=add_row)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="section-card"><div class="section-title">🎁 4. 프로모션 및 결제 조건</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-card"><div class="section-title">🎁 4. 프로모션 조건</div>', unsafe_allow_html=True)
     p1, p2 = st.columns(2)
     with p1:
-        initial_cost = st.number_input("초기 설치비 / 가입비 (원)", value=0, step=10000)
+        initial_cost = st.number_input("초기 설치비 (원)", value=0, step=10000)
         promo_discount = st.text_input("약정 할인 조건", value="36개월 약정 기준 (설치비 전액 면제)")
     with p2:
         free_gift = st.text_input("특별 증정 혜택", value="향기 리필용 카트리지 1팩 무상 증정")
-        special_terms = st.text_input("결제 방식 안내", value="자동이체 / 법인카드 결제 가능 (VAT 별도)")
+        special_terms = st.text_input("결제 안내", value="자동이체 / 법인카드 결제 가능 (VAT 별도)")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    generate_btn = st.button("✨ AI 맞춤 제안서 자동 생성 및 견적 확정", use_container_width=True)
+    generate_btn = st.button("✨ AI 맞춤 제안서 자동 생성", use_container_width=True)
 
 with col_right:
-    st.markdown('<div class="section-card"><div class="section-title">📋 5. 제안서 실시간 검토 및 PDF 발급</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-card"><div class="section-title">📋 5. 제안서 검토 및 PDF 발급</div>', unsafe_allow_html=True)
     
     if generate_btn:
         if not client_name:
-            st.warning("⚠️ 고객(업체)명을 먼저 입력해 주세요.")
+            st.warning("⚠️ 고객(업체)명을 입력해 주세요.")
         else:
-            with st.spinner("🤖 DeepSeek AI가 맞춤형 환경 솔루션을 분석 중입니다..."):
-                # 진단 체크 목록 정리
+            with st.spinner("🤖 DeepSeek AI 분석 중..."):
                 active_issues = []
                 if chk_drain: active_issues.append("하수구 악취")
                 if chk_mold: active_issues.append("습기/곰팡이")
                 if chk_food: active_issues.append("유기물 부패취")
-                if chk_toilet: active_issues.append("화장실 요석취")
+                if chk_toilet: active_issues.append("화장실 요석")
                 if chk_chem: active_issues.append("약품 냄새")
                 if chk_vent: active_issues.append("환기 부족")
                 
-                # 견적 합계 계산
                 total_monthly = sum(r["fee"] for r in st.session_state["rows"])
+                summary_rows = [{"label": f"{r['area']} - {r['device']} ({r['cycle']})", "price_display": f"{r['fee']:,}원 / 월"} for r in st.session_state["rows"]]
                 
-                summary_rows = []
-                for r in st.session_state["rows"]:
-                    summary_rows.append({
-                        "label": f"{r['area']} - {r['device']} ({r['cycle']})",
-                        "price_display": f"{r['fee']:,}원 / 월"
-                    })
-                
-                # AI 제안 콘텐츠 생성
-                ai_result = generate_proposal_content(
-                    client_name=client_name,
-                    biz_type=biz_type,
-                    issues=active_issues,
-                    memo=diagnosis_memo,
-                    devices=[r["device"] for r in st.session_state["rows"]]
-                )
+                ai_res = generate_ai_proposal(client_name, biz_type, active_issues, diagnosis_memo, [r["device"] for r in st.session_state["rows"]])
                 
                 st.session_state["proposal_data"] = {
                     "client_name": client_name,
                     "biz_type": biz_type,
                     "date": datetime.now().strftime("%Y년 %m월 %d일"),
-                    "diagnosis_alert": ai_result.get("diagnosis_alert", "쾌적하고 위생적인 공간 환경 유지를 위한 맞춤 케어가 필요합니다."),
-                    "solution_plan": ai_result.get("solution_plan", "구역별 최적 기기 배치 및 정기 관리를 통해 냄새 원인을 근본적으로 제거합니다."),
-                    "effect_points": ai_result.get("effect_points", ["실내 공기질 정화 및 바이러스 차단", "고객 및 임직원 만족도 향상", "브랜드 신뢰도 증대"]),
+                    "diagnosis_alert": ai_res.get("diagnosis_alert"),
+                    "solution_plan": ai_res.get("solution_plan"),
+                    "effect_points": ai_res.get("effect_points"),
                     "summary_rows": summary_rows,
                     "total_monthly": f"{total_monthly:,}원",
-                    "initial_cost": f"{initial_cost:,}원" if initial_cost > 0 else "무상 (프로모션 적용)",
+                    "initial_cost": f"{initial_cost:,}원" if initial_cost > 0 else "무상",
                     "promo_discount": promo_discount,
                     "free_gift": free_gift,
                     "special_terms": special_terms,
                     "footer_notice": "※ 본 견적서는 세스코 환경위생 관리 표준 규정에 의해 발행되었으며 유효기간은 발행일로부터 30일입니다."
                 }
-                st.success("🎉 제안서가 성공적으로 생성되었습니다!")
+                st.success("🎉 제안서가 생성되었습니다!")
 
     if "proposal_data" in st.session_state:
         data = st.session_state["proposal_data"]
+        st.info(f"**[{data['client_name']}] 진단 소견**\n\n{data['diagnosis_alert']}")
         
-        st.info(f"**[{data['client_name']}] 맞춤 솔루션 브리핑**\n\n{data['diagnosis_alert']}")
-        
-        with st.expander("📌 상세 솔루션 구성 및 견적 요약", expanded=True):
-            st.markdown(f"**솔루션 계획:** {data['solution_plan']}")
+        with st.expander("📌 상세 구성 및 견적 요약", expanded=True):
+            st.markdown(f"**계획:** {data['solution_plan']}")
             st.markdown("---")
             for row in data["summary_rows"]:
                 st.write(f"• {row['label']}: **{row['price_display']}**")
             st.markdown(f"**총 월 관리비:** `{data['total_monthly']}` (VAT 별도)")
-            st.markdown(f"**프로모션:** {data['promo_discount']} / **혜택:** {data['free_gift']}")
 
-        try:
-            pdf_bytes = build_pdf(data, st.session_state.get("uploaded_photo"))
-            st.download_button(
-                label="📄 A4 제안서 PDF 즉시 다운로드",
-                data=pdf_bytes,
-                file_name=f"{client_name}_환경솔루션제안서_{datetime.now().strftime('%Y%m%d')}.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
-        except Exception as e:
-            st.error(f"PDF 렌더링 오류: {e}")
+        pdf_bytes = create_pdf(data)
+        st.download_button(
+            label="📄 A4 제안서 PDF 다운로드",
+            data=pdf_bytes,
+            file_name=f"{client_name}_환경솔루션제안서.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
     else:
-        st.info("👈 좌측에서 정보를 입력하고 생성 버튼을 누르면 실시간 미리보기와 PDF 발급 버튼이 활성화됩니다.")
+        st.info("👈 좌측에서 정보를 입력하고 생성 버튼을 누르면 제안서 검토 및 PDF 다운로드가 가능합니다.")
         
     st.markdown('</div>', unsafe_allow_html=True)
