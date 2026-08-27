@@ -9,13 +9,13 @@ from openai import OpenAI
 from jinja2 import Environment, FileSystemLoader
 from playwright.sync_api import sync_playwright
 
-# Streamlit Cloud 환경에서 Playwright Chromium 자동 설치
+# Playwright 및 필수 리눅스 의존성 라이브러리 전체 자동 설치
 @st.cache_resource
 def ensure_playwright_installed():
     try:
-        subprocess.run(["playwright", "install", "chromium"], check=True)
+        subprocess.run(["playwright", "install", "--with-deps", "chromium"], check=True)
     except Exception as e:
-        st.error(f"Playwright 설치 중 오류 발생: {e}")
+        st.error(f"Playwright 설치 오류: {e}")
 
 ensure_playwright_installed()
 
@@ -176,7 +176,12 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
     with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=True,
-            args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu"
+            ]
         )
         page = browser.new_page()
         page.set_viewport_size({"width": 794, "height": 1123})
