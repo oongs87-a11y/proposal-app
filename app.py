@@ -323,10 +323,16 @@ if "installed_items" not in st.session_state:
 col1, col2 = st.columns([1.05, 0.95], gap="large")
 
 with col1:
-    st.markdown('<div class="premium-card"><div class="card-label">🏢 1. 기본 정보 & 업종 선택</div>', unsafe_allow_html=True)
+    st.markdown('<div class="premium-card"><div class="card-label">🏢 1. 기본 정보 & 컨설턴트 정보</div>', unsafe_allow_html=True)
     client_name = st.text_input("업체명 / 고객명", placeholder="예: 연세바른병원, 스타벅스 강남점 등")
     biz_type = st.selectbox("업종 선택 (업종별 맞춤 설명 자동 생성)", BUSINESS_TYPES)
     
+    c_m1, c_m2 = st.columns(2)
+    with c_m1:
+        manager_name = st.text_input("세스코 담당자명", placeholder="예: 홍길동 팀장")
+    with c_m2:
+        manager_phone = st.text_input("담당자 연락처", placeholder="예: 010-1234-5678")
+
     uploaded_photo = st.file_uploader("📸 현장 전경 사진 업로드 (선택)", type=["jpg", "jpeg", "png"])
     if uploaded_photo:
         st.image(uploaded_photo, caption="선택된 현장 사진", width=260)
@@ -340,7 +346,7 @@ with col1:
         c1 = st.checkbox("하수구 / 배관 악취", value=False)
         c2 = st.checkbox("습기 · 곰팡이 냄새", value=False)
         c3 = st.checkbox("음식물 / 유기물 부패취", value=False)
-        c7 = st.checkbox("향기 컨설팅", value=False)
+        c7 = st.checkbox("향기 컨설팅 필요", value=False)
     with col_chk2:
         c4 = st.checkbox("화장실 요석 / 암모니아취", value=False)
         c5 = st.checkbox("소독약 / 화학 약품 냄새", value=False)
@@ -547,6 +553,8 @@ if generate_btn:
                 
                 ai_data["pricing_blocks"] = pricing_blocks
                 ai_data["solution_items"] = st.session_state["installed_items"]
+                ai_data["manager_name"] = manager_name.strip()
+                ai_data["manager_phone"] = manager_phone.strip()
                 
                 summary_rows = [
                     {"label": "1개월 차 (설치 당월)", "badge": "일할청구", "price_display": "설치일 기준 일할 계산 청구"},
@@ -584,6 +592,8 @@ with col2:
         data = st.session_state["proposal_data"]
         
         st.markdown(f"#### 🏢 {data.get('client_name')} <span style='font-size:14px; font-weight:normal; color:#64748b;'>({biz_type})</span>", unsafe_allow_html=True)
+        if data.get("manager_name") or data.get("manager_phone"):
+            st.markdown(f"**컨설턴트:** {data.get('manager_name', '')} ({data.get('manager_phone', '')})")
         st.info(f"**🔍 진단 요약:** {data.get('diagnosis_alert')}")
         
         with st.expander("💳 결제 요약 및 특약 사항", expanded=True):
