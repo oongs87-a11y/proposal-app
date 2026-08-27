@@ -62,14 +62,6 @@ st.markdown("""
         border-radius: 50%;
         pointer-events: none;
     }
-    .hero-top-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
     .hero-badge {
         display: inline-flex;
         align-items: center;
@@ -82,18 +74,7 @@ st.markdown("""
         letter-spacing: 0.5px;
         color: #90e0ef;
         border: 1px solid rgba(255, 255, 255, 0.25);
-    }
-    .hero-feature-badge {
-        display: inline-flex;
-        align-items: center;
-        background: rgba(245, 158, 11, 0.2);
-        backdrop-filter: blur(8px);
-        padding: 5px 12px;
-        border-radius: 8px;
-        font-size: 11px;
-        font-weight: 700;
-        color: #fde68a;
-        border: 1px solid rgba(245, 158, 11, 0.4);
+        margin-bottom: 10px;
     }
     .hero-title {
         font-size: 24px !important;
@@ -106,9 +87,15 @@ st.markdown("""
         font-size: 13px !important;
         color: #cbd5e1 !important;
         font-weight: 400;
-        margin: 0 0 8px 0 !important;
+        margin: 0 0 12px 0 !important;
     }
-    .hero-bottom-tag {
+    .hero-tags-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+    }
+    .hero-bug-tag {
         display: inline-flex;
         align-items: center;
         background: rgba(239, 68, 68, 0.18);
@@ -118,6 +105,17 @@ st.markdown("""
         font-size: 11.5px;
         font-weight: 600;
         color: #fecaca;
+    }
+    .hero-feature-tag {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(245, 158, 11, 0.18);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: #fde68a;
     }
 
     .premium-card {
@@ -342,13 +340,13 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
 # 상단 위트 배너 영역
 st.markdown("""
 <div class="hero-header">
-    <div class="hero-top-row">
-        <div class="hero-badge">🚀 DEVELOPED BY 이웅희</div>
-        <div class="hero-feature-badge">🏆 기능 개선 요청: 이번 달 계약 1건 추가 시 즉시 패치</div>
-    </div>
+    <div class="hero-badge">🚀 DEVELOPED BY 이웅희</div>
     <div class="hero-title">🛡️ 세스코 환경 솔루션 견적·제안 시스템</div>
     <div class="hero-sub">밤마다 코드를 손수 깎아 영업인들의 칼퇴를 보장하는 1초 맞춤 견적기</div>
-    <div class="hero-bottom-tag">📈 버그 신고: 이웅희 팀장 (계약서 들고 사무실로 오시면 즉시 박멸 🪳)</div>
+    <div class="hero-tags-group">
+        <div class="hero-bug-tag">📈 버그 신고: 이웅희 팀장 (계약서 들고 사무실로 오시면 즉시 박멸 🪳)</div>
+        <div class="hero-feature-tag">🏆 기능 개선 요청: 이번 달 계약 1건 추가 시 즉시 패치</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
