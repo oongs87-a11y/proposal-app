@@ -2,11 +2,22 @@ import os
 import io
 import json
 import base64
+import subprocess
 from datetime import datetime
 import streamlit as st
 from openai import OpenAI
 from jinja2 import Environment, FileSystemLoader
 from playwright.sync_api import sync_playwright
+
+# Streamlit Cloud 환경에서 Playwright Chromium 자동 설치
+@st.cache_resource
+def ensure_playwright_installed():
+    try:
+        subprocess.run(["playwright", "install", "chromium"], check=True)
+    except Exception as e:
+        st.error(f"Playwright 설치 중 오류 발생: {e}")
+
+ensure_playwright_installed()
 
 st.set_page_config(
     page_title="현장 세스코 솔루션 제안·견적기",
@@ -163,7 +174,10 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
     html_content = template.render(data=data, photo_base64=photo_b64)
     
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+        )
         page = browser.new_page()
         page.set_viewport_size({"width": 794, "height": 1123})
         page.set_content(html_content, wait_until="networkidle")
