@@ -198,7 +198,7 @@ VISIT_CYCLES = [
 COMMITMENT_PERIODS = ["36개월", "60개월", "72개월"]
 CONTRACT_PERIODS = ["60개월", "72개월", "해당없음"]
 
-PROMO_DISCOUNT_TYPES = ["선택안함", "렌탈료 반값", "렌탈료 면제"]
+PROMO_DISCOUNT_TYPES = ["선택안함", "렌탈료 반값", "렌탈료 면제", "결합할인 적용", "특별 프로모션 적용"]
 PROMO_MONTH_LIST = ["선택안함"] + [f"{i}개월" for i in range(1, 13)]
 
 def get_deepseek_api_key():
@@ -329,9 +329,9 @@ with col1:
     
     c_m1, c_m2 = st.columns(2)
     with c_m1:
-        manager_name = st.text_input("세스코 담당자명", placeholder="예: 홍길동 팀장")
+        manager_name = st.text_input("세스코 담당자명", placeholder="예: 이웅희 팀장")
     with c_m2:
-        manager_phone = st.text_input("담당자 연락처", placeholder="예: 010-1234-5678")
+        manager_phone = st.text_input("담당자 연락처", placeholder="예: 010-2264-2723")
 
     uploaded_photo = st.file_uploader("📸 현장 전경 사진 업로드 (선택)", type=["jpg", "jpeg", "png"])
     if uploaded_photo:
@@ -475,11 +475,12 @@ with col1:
             c_i1, c_i2 = st.columns([5, 1])
             with c_i1:
                 color_text = f" <span style='color:#64748b;'>({item['color']})</span>" if item.get("color") else ""
+                orig_show = f"<span style='text-decoration:line-through; color:#94a3b8; margin-right:6px;'>월 {item_orig_sum:,}원</span>" if item_orig_sum > 0 else ""
                 st.markdown(f"""
                 <div class="item-list-row">
                     <div style="font-weight:700; font-size:14px; color:#0f172a;">
                         [{item['zone']}] {item['device']}{color_text} · {item['qty']}대
-                        <span style="float:right; font-weight:700; color:#0077b6;">월 {item_sale_sum:,}원</span>
+                        <span style="float:right; font-weight:700; color:#0077b6;">{orig_show}월 {item_sale_sum:,}원</span>
                     </div>
                     <div style="font-size:12px; color:#64748b; margin-top:4px;">
                         ⚙️ {item.get('scent', '')}
@@ -517,7 +518,7 @@ if generate_btn:
     if not client_name or not st.session_state["installed_items"]:
         st.warning("⚠️ 업체명과 기기를 최소 1개 이상 입력해 주세요.")
     else:
-        with st.spinner(f"🤖 DeepSeek AI가 [{biz_type}] 맞춤 솔루션을 설계 중입니다..."):
+        with st.spinner(f"⚡ [이웅희 AI] 가동 중... [{biz_type}] 업종 전용 솔루션을 칼같이 뽑아내고 있습니다! 🤖"):
             try:
                 promo_bullet_list = []
                 if opt_banner:
@@ -537,11 +538,13 @@ if generate_btn:
                 
                 pricing_blocks = []
                 total_sale_sum = 0
+                total_orig_sum = 0
                 has_any_promo = False
                 for item in st.session_state["installed_items"]:
                     sum_sale = item["sale_price"] * item["qty"]
                     sum_orig = item["orig_price"] * item["qty"]
                     total_sale_sum += sum_sale
+                    total_orig_sum += sum_orig
                     if item.get("promo_text"):
                         has_any_promo = True
                     
@@ -561,13 +564,14 @@ if generate_btn:
                 ai_data["manager_name"] = manager_name.strip()
                 ai_data["manager_phone"] = manager_phone.strip()
                 
+                # 총 정상가 / 할인 혜택 / 최종 금액 계산
+                total_discount_sum = total_orig_sum - total_sale_sum if total_orig_sum > total_sale_sum else 0
+                ai_data["total_orig_display"] = f"월 {total_orig_sum:,}원" if total_orig_sum > 0 else ""
+                ai_data["total_discount_display"] = f"-{total_discount_sum:,}원" if total_discount_sum > 0 else ""
+                ai_data["total_sale_display"] = f"월 {total_sale_sum:,}원"
+                
                 summary_rows = [
-                    {"label": "1개월 차 (설치 당월)", "badge": "일할청구", "price_display": "설치일 기준 일할 계산 청구"},
-                    {
-                        "label": "매월 정기 결제액 (VAT 포함)",
-                        "badge": "프로모션 적용" if (has_any_promo or promo_notes_custom.strip()) else "할인가",
-                        "price_display": f"월 {total_sale_sum:,}원"
-                    }
+                    {"label": "1개월 차 (설치 당월)", "badge": "일할청구", "price_display": "설치일 기준 일할 계산 청구"}
                 ]
                 
                 if opt_banner:
@@ -587,7 +591,7 @@ if generate_btn:
                 
                 st.session_state["proposal_data"] = ai_data
                 st.session_state["uploaded_photo_bytes"] = uploaded_photo.getvalue() if uploaded_photo else None
-                st.success("🎉 제안서가 성공적으로 생성되었습니다!")
+                st.success("🎉 [이웅희 AI] 제안서 생성 완료! 완벽한 견적이 준비되었습니다.")
             except Exception as e:
                 st.error(f"생성 실패: {e}")
 
@@ -602,6 +606,12 @@ with col2:
         st.info(f"**🔍 진단 요약:** {data.get('diagnosis_alert')}")
         
         with st.expander("💳 결제 요약 및 특약 사항", expanded=True):
+            if data.get("total_orig_display"):
+                st.write(f"- 총 정상 렌탈료: **{data.get('total_orig_display')}**")
+            if data.get("total_discount_display"):
+                st.write(f"- 총 프로모션 할인 혜택: **:red[{data.get('total_discount_display')}]**")
+            st.write(f"- 🌟 **최종 매월 정기 결제액: :blue[{data.get('total_sale_display')}]**")
+            
             for row in data.get("summary_rows", []):
                 st.write(f"- {row.get('label')}: **{row.get('price_display')}** ({row.get('badge', '')})")
             st.markdown("---")
