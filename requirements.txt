@@ -1,5 +1,6 @@
 streamlit
 openai
-python-dotenv
+requests
 jinja2
 playwright
+reportlab
