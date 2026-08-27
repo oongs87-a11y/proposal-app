@@ -5,10 +5,9 @@ import json
 from datetime import datetime
 import io
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
@@ -150,7 +149,7 @@ def generate_ai_proposal(client_name, biz_type, issues, memo, devices):
         "effect_points": ["실내 바이러스 및 냄새 원인 근본 제거", "방문 고객 만족도 증대", "청결 안심 공간 구축"]
     }
 
-def create_pdf(data, photo_bytes=None):
+def create_pdf(data):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -175,7 +174,6 @@ def create_pdf(data, photo_bytes=None):
     sub_style = ParagraphStyle('Sub', parent=styles['Normal'], fontName=font_name, fontSize=10, textColor=colors.HexColor('#4A5568'), leading=14)
     sec_style = ParagraphStyle('Sec', parent=styles['Heading2'], fontName=font_name, fontSize=12, textColor=colors.HexColor('#0072CE'), spaceBefore=8, spaceAfter=6)
     body_style = ParagraphStyle('Body', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#2D3748'), leading=13)
-    bold_style = ParagraphStyle('Bold', parent=styles['Normal'], fontName=font_name, fontSize=9, textColor=colors.HexColor('#002B49'), fontName=font_name, leading=13)
 
     elements = []
     elements.append(Paragraph("<b>CESCO 환경위생 맞춤 솔루션 견적서</b>", title_style))
