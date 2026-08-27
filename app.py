@@ -324,16 +324,18 @@ col1, col2 = st.columns([1.05, 0.95], gap="large")
 
 with col1:
     st.markdown('<div class="premium-card"><div class="card-label">🏢 1. 기본 정보 & 컨설턴트 정보</div>', unsafe_allow_html=True)
-    client_name = st.text_input("업체명 / 고객명", placeholder="예: 연세바른병원, 스타벅스 강남점 등")
+    client_name = st.text_input("업체명 / 고객명", placeholder="예: (주)에이비씨컴퍼니, 늘푸른의원 등")
     biz_type = st.selectbox("업종 선택 (업종별 맞춤 설명 자동 생성)", BUSINESS_TYPES)
     
     c_m1, c_m2 = st.columns(2)
     with c_m1:
-        manager_name = st.text_input("세스코 담당자명", placeholder="예: 이웅희 팀장")
+        manager_name = st.text_input("세스코 담당자명", placeholder="예: 홍길동 팀장")
     with c_m2:
-        manager_phone = st.text_input("담당자 연락처", placeholder="예: 010-2264-2723")
+        manager_phone = st.text_input("담당자 연락처", placeholder="예: 010-1234-5678")
 
-    uploaded_photo = st.file_uploader("📸 현장 전경 사진 업로드 (선택)", type=["jpg", "jpeg", "png"])
+    st.markdown("<p style='font-size:13px; font-weight:700; margin:14px 0 2px 0; color:#1e293b;'>📸 현장 전경 사진 업로드 (선택)</p>", unsafe_allow_html=True)
+    st.caption("⚠️ **가로 비율(4:3 또는 16:9) 사진 권장** (세로로 긴 사진은 제안서에서 잘려 보일 수 있습니다)")
+    uploaded_photo = st.file_uploader("사진 파일 선택", type=["jpg", "jpeg", "png"], label_visibility="collapsed")
     if uploaded_photo:
         st.image(uploaded_photo, caption="선택된 현장 사진", width=260)
     st.markdown('</div>', unsafe_allow_html=True)
@@ -564,7 +566,6 @@ if generate_btn:
                 ai_data["manager_name"] = manager_name.strip()
                 ai_data["manager_phone"] = manager_phone.strip()
                 
-                # 총 정상가 / 할인 혜택 / 최종 금액 계산
                 total_discount_sum = total_orig_sum - total_sale_sum if total_orig_sum > total_sale_sum else 0
                 ai_data["total_orig_display"] = f"월 {total_orig_sum:,}원" if total_orig_sum > 0 else ""
                 ai_data["total_discount_display"] = f"-{total_discount_sum:,}원" if total_discount_sum > 0 else ""
