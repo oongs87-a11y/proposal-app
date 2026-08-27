@@ -43,7 +43,7 @@ st.markdown("""
     .hero-header {
         background: linear-gradient(135deg, #0b2545 0%, #133c55 50%, #1e5f74 100%);
         border-radius: 16px;
-        padding: 28px 32px;
+        padding: 24px 28px;
         color: #ffffff;
         box-shadow: 0 10px 25px -5px rgba(11, 37, 69, 0.2), 0 8px 10px -6px rgba(11, 37, 69, 0.1);
         margin-bottom: 24px;
@@ -62,6 +62,14 @@ st.markdown("""
         border-radius: 50%;
         pointer-events: none;
     }
+    .hero-top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
     .hero-badge {
         display: inline-flex;
         align-items: center;
@@ -70,11 +78,22 @@ st.markdown("""
         padding: 4px 12px;
         border-radius: 9999px;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 0.5px;
         color: #90e0ef;
-        margin-bottom: 8px;
         border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .hero-bug-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(239, 68, 68, 0.2);
+        backdrop-filter: blur(8px);
+        padding: 4px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #fecaca;
+        border: 1px solid rgba(239, 68, 68, 0.35);
     }
     .hero-title {
         font-size: 24px !important;
@@ -311,9 +330,12 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
 
 st.markdown("""
 <div class="hero-header">
-    <div class="hero-badge">CESCO PROFESSIONAL CARE</div>
+    <div class="hero-top-row">
+        <div class="hero-badge">☕ DEVELOPED BY COFFEE & 이웅희</div>
+        <div class="hero-bug-badge">📈 버그 신고: 이웅희 (계약서 들고 오시면 즉시 버그 박멸)</div>
+    </div>
     <div class="hero-title">🛡️ 세스코 환경 솔루션 견적·제안 시스템</div>
-    <div class="hero-sub">현장 정밀 진단부터 맞춤형 패키지 견적서 발행까지 원스톱 지원</div>
+    <div class="hero-sub">칼퇴를 향한 이웅희 팀장의 피·땀·눈물로 완성된 현장 영업 특화 1초 견적 자동화 엔진</div>
 </div>
 """, unsafe_allow_html=True)
 
