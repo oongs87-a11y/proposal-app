@@ -24,7 +24,7 @@
       height: 297mm;
       max-height: 297mm;
       background: #ffffff;
-      padding: 10mm 12mm 9mm 12mm;
+      padding: 9mm 12mm 8mm 12mm;
       box-sizing: border-box;
       color: #1e293b;
       display: flex;
@@ -42,7 +42,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 9px;
+      margin-bottom: 8px;
       flex-shrink: 0;
     }
     .header-left { flex: 1; }
@@ -67,7 +67,7 @@
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 6px;
-      padding: 7px 12px;
+      padding: 7px 13px;
       text-align: right;
       min-width: 155px;
     }
@@ -78,9 +78,9 @@
     /* 2단 메인 본문 */
     .main-body {
       display: flex;
-      gap: 11px;
+      gap: 12px;
       flex: 1;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       min-height: 0;
     }
 
@@ -88,30 +88,30 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 9px;
     }
 
     .col-right {
       flex: 1.05;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
 
     /* 카드 박스 공통 */
     .card-box {
       border: 1px solid #cbd5e1;
       border-radius: 7px;
-      padding: 10px 13px;
+      padding: 12px 14px;
       background: #ffffff;
     }
     .card-title {
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 700;
       color: #0f4c81;
       border-bottom: 1.5px solid #e2e8f0;
       padding-bottom: 5px;
-      margin-bottom: 7px;
+      margin-bottom: 8px;
     }
 
     /* 현장 사진 & 대체 배너 */
@@ -135,12 +135,12 @@
       text-align: center;
       font-size: 9.5px;
       color: #64748b;
-      margin-top: 3px;
+      margin-top: 4px;
     }
 
     .no-photo-banner {
       width: 100%;
-      height: 105px;
+      height: 110px;
       background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
       border: 1px dashed #7dd3fc;
       border-radius: 6px;
@@ -156,54 +156,55 @@
       color: #ffffff;
       font-size: 9px;
       font-weight: 700;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 10px;
       margin-bottom: 3px;
     }
     .no-photo-title {
-      font-size: 11.5px;
+      font-size: 12px;
       font-weight: 800;
       color: #0369a1;
       margin-bottom: 2px;
     }
     .no-photo-desc {
-      font-size: 9px;
+      font-size: 9.5px;
       color: #475569;
-      line-height: 1.35;
+      line-height: 1.4;
     }
 
-    /* 1. 진단 텍스트 */
+    /* 1. 진단 텍스트 (확대) */
     .alert-chip {
       background: #fef2f2;
-      border-left: 3px solid #ef4444;
-      padding: 5px 9px;
-      font-size: 11px;
+      border-left: 3.5px solid #ef4444;
+      padding: 6px 10px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #dc2626;
       border-radius: 0 4px 4px 0;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
     }
     .diag-text {
-      font-size: 10px;
-      color: #475569;
-      line-height: 1.5;
+      font-size: 10.5px;
+      color: #334155;
+      line-height: 1.6;
     }
 
-    /* 2 & 3. 케어 및 기대효과 리스트 */
+    /* 2 & 3. 케어 및 기대효과 리스트 (확대) */
     .care-item, .exp-item {
       display: flex;
-      gap: 7px;
-      margin-bottom: 5px;
-      font-size: 10px;
-      line-height: 1.4;
+      gap: 9px;
+      margin-bottom: 7px;
+      font-size: 10.5px;
+      line-height: 1.45;
     }
     .care-item:last-child, .exp-item:last-child {
       margin-bottom: 0;
     }
     .item-body strong {
       display: block;
-      color: #1e293b;
-      font-size: 10.5px;
+      color: #0f172a;
+      font-size: 11px;
+      margin-bottom: 2px;
     }
     .item-body span {
       color: #64748b;
@@ -326,7 +327,7 @@
   <!-- 메인 본문 2열 -->
   <div class="main-body">
     
-    <!-- 좌측 컬럼 (1, 2, 3번 큼직하고 시원하게 유지) -->
+    <!-- 좌측 컬럼 (1, 2, 3번 폰트 및 박스 크기 확대) -->
     <div class="col-left">
       
       {% if photo_base64 %}
@@ -383,11 +384,11 @@
 
     </div>
 
-    <!-- 우측 컬럼 (4번 유지 + 5번 슬림 압축) -->
+    <!-- 우측 컬럼 -->
     <div class="col-right">
 
       <!-- 4. 맞춤 솔루션 설계 표 -->
-      <div class="card-box">
+      <div class="card-box" style="padding: 8px 10px;">
         <div class="card-title">4. 공간별 맞춤 솔루션 설계</div>
         <table class="quote-table">
           <thead>
@@ -421,8 +422,8 @@
         </table>
       </div>
 
-      <!-- 5. 견적 및 프로모션 안내 (슬림 압축 테이블) -->
-      <div class="card-box">
+      <!-- 5. 견적 및 프로모션 안내 -->
+      <div class="card-box" style="padding: 8px 10px;">
         <div class="card-title">5. 견적 및 프로모션 상세 <span style="font-size:9.5px; font-weight:normal; color:#64748b;">(VAT 포함)</span></div>
         
         <table class="price-table">
