@@ -9,13 +9,12 @@ from openai import OpenAI
 from jinja2 import Environment, FileSystemLoader
 from playwright.sync_api import sync_playwright
 
-# Playwright 및 필수 리눅스 의존성 라이브러리 전체 자동 설치
 @st.cache_resource
 def ensure_playwright_installed():
     try:
-        subprocess.run(["playwright", "install", "--with-deps", "chromium"], check=True)
+        subprocess.run(["playwright", "install", "chromium"], check=True)
     except Exception as e:
-        st.error(f"Playwright 설치 오류: {e}")
+        pass
 
 ensure_playwright_installed()
 
