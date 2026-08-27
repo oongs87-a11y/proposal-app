@@ -40,7 +40,6 @@ st.markdown("""
         max-width: 1200px !important;
     }
 
-    /* 프리미엄 헤더 배너 */
     .hero-header {
         background: linear-gradient(135deg, #0b2545 0%, #133c55 50%, #1e5f74 100%);
         border-radius: 16px;
@@ -91,7 +90,6 @@ st.markdown("""
         margin: 0 !important;
     }
 
-    /* 카드 섹션 */
     .premium-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -110,7 +108,6 @@ st.markdown("""
         gap: 8px;
     }
 
-    /* 입력 필드 스타일 */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > div,
     .stTextArea textarea {
@@ -127,7 +124,6 @@ st.markdown("""
         background-color: #ffffff !important;
     }
 
-    /* 버튼 스타일 */
     .stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #0077b6 0%, #0096c7 100%) !important;
         border: none !important;
@@ -159,7 +155,6 @@ st.markdown("""
         transform: translateY(-1px) !important;
     }
 
-    /* 등록된 기기 리스트 카드 */
     .item-list-row {
         background: #f8fafc;
         border: 1px solid #e2e8f0;
@@ -201,7 +196,10 @@ VISIT_CYCLES = [
 ]
 
 COMMITMENT_PERIODS = ["36개월", "60개월", "72개월"]
-CONTRACT_PERIODS = ["60개월", "72개월"]
+CONTRACT_PERIODS = ["60개월", "72개월", "해당없음"]
+
+PROMO_DISCOUNT_TYPES = ["선택안함", "렌탈료 반값", "렌탈료 면제"]
+PROMO_MONTH_LIST = [f"{i}개월" for i in range(1, 13)]
 
 def get_deepseek_api_key():
     if "DEEPSEEK_API_KEY" in st.secrets:
@@ -235,12 +233,12 @@ def call_deepseek_smart(client_name: str, biz_type: str, odor_types: list, custo
     {custom_promo_text}
 
     ★ 작성 요구사항:
-    1. `diagnosis_alert`: 업종 특성과 악취 요인을 결합한 1줄 진단명 작성
+    1. `diagnosis_alert`: 업종 특성과 악취/향기 요인을 결합한 1줄 진단명 작성
     2. `diagnosis_description`: {biz_type} 맞춤형 전문 진단 요약(2-3줄) 작성
     3. `care_solutions`: 기기별 방문주기와 세스코 정기 관리 3단계 작성
     4. `expected_values`: 좌측 하단용 {biz_type} 맞춤형 핵심 도입 효과 2~3개 작성
     5. `space_guides`: 각 구역별 도입 필요성과 기대 효과를 1~2줄씩 명확하게 작성
-    6. `footer_notice`: 약정/계약조건, 사은품 증정 내역, 설치비 면제, 부가세/정기 케어 포함 여부를 고객이 읽기 쉬운 정식 공지 문장으로 매끄럽게 완성
+    6. `footer_notice`: 약정/계약조건, 사은품 증정 내역, 설치비 무상 지원, 부가세 포함/정기 케어 포함 여부를 고객이 읽기 쉬운 정식 공지 문장으로 매끄럽게 완성
 
     반드시 마크다운 없이 순수 JSON 포맷으로만 응답하세요:
     {{
@@ -261,7 +259,7 @@ def call_deepseek_smart(client_name: str, biz_type: str, odor_types: list, custo
         "space_guides": [
             {{"zone": "구역명", "desc": "해당 기기가 이 공간에 필요한 명확한 이유와 설치 후 기대 효과"}}
         ],
-        "footer_notice": "본 견적은 프로모션 적용 한정 조건이며, 모든 금액에는 부가세 및 세스코 전문 마스터의 정기 방문 케어와 소모품 비용이 포함되어 있습니다."
+        "footer_notice": "본 제안서는 부가세가 포함되어 있으며 초기 설치비는 무상 지원됩니다. 세스코 전문 마스터의 정기 방문 케어 및 소모품 비용이 포함되어 있습니다."
     }}
     """
 
@@ -311,7 +309,6 @@ def build_pdf(data: dict, uploaded_photo_bytes=None) -> bytes:
         
     return pdf_bytes
 
-# 프리미엄 헤더 영역
 st.markdown("""
 <div class="hero-header">
     <div class="hero-badge">CESCO PROFESSIONAL CARE</div>
@@ -343,6 +340,7 @@ with col1:
         c1 = st.checkbox("하수구 / 배관 악취", value=False)
         c2 = st.checkbox("습기 · 곰팡이 냄새", value=False)
         c3 = st.checkbox("음식물 / 유기물 부패취", value=False)
+        c7 = st.checkbox("향기 컨설팅 필요", value=False)
     with col_chk2:
         c4 = st.checkbox("화장실 요석 / 암모니아취", value=False)
         c5 = st.checkbox("소독약 / 화학 약품 냄새", value=False)
@@ -355,6 +353,7 @@ with col1:
     if c4: selected_odors.append("화장실 요석 악취")
     if c5: selected_odors.append("소독약 냄새")
     if c6: selected_odors.append("환기 부족 복합취")
+    if c7: selected_odors.append("공간 향기 컨설팅 및 발향 케어")
 
     custom_notes = st.text_input(
         "추가 특이사항 메모", 
@@ -394,7 +393,15 @@ with col1:
             f_sale = st.number_input("할인가(대당/월)", min_value=0, value=0, step=1000)
 
         f_spec = st.text_input("선택 조향 / 상세 사양 (선택)", placeholder="예: 프리지아 향, 살균 케어, 피톤치드 릴렉스")
-        f_promo_note = st.text_input("개별 프로모션 문구 (선택)", placeholder="예: 9개월 렌탈료 반값, 설치비 면제")
+        
+        st.markdown("<p style='font-size:12.5px; font-weight:700; margin:8px 0 4px 0; color:#334155;'>개별 프로모션 조건 선택 (선택)</p>", unsafe_allow_html=True)
+        c_pr_m, c_pr_t = st.columns([1, 1])
+        with c_pr_m:
+            f_promo_month = st.selectbox("프로모션 개월수", PROMO_MONTH_LIST, index=3)
+        with c_pr_t:
+            f_promo_type = st.selectbox("할인 혜택 구분", PROMO_DISCOUNT_TYPES, index=0)
+
+        f_promo_custom = st.text_input("기타 프로모션 직접 입력 (선택)", placeholder="직접 기재할 프로모션이 있는 경우만 작성 (예: 보증금 면제)")
         
         add_btn = st.form_submit_button("➕ 기기 목록에 추가", use_container_width=True)
         
@@ -407,7 +414,7 @@ with col1:
                 spec_parts = []
                 if f_commitment:
                     spec_parts.append(f"약정 {f_commitment}")
-                if f_contract:
+                if f_contract and f_contract != "해당없음":
                     spec_parts.append(f"계약 {f_contract}")
                 if f_color.strip():
                     spec_parts.append(f"색상: {f_color.strip()}")
@@ -417,6 +424,15 @@ with col1:
                     spec_parts.append(f_spec.strip())
                 
                 final_scent_spec = " / ".join(spec_parts) if spec_parts else "표준 케어 사양"
+
+                final_promo_str = ""
+                if f_promo_type != "선택안함":
+                    final_promo_str = f"{f_promo_month} {f_promo_type}"
+                if f_promo_custom.strip():
+                    if final_promo_str:
+                        final_promo_str += f" / {f_promo_custom.strip()}"
+                    else:
+                        final_promo_str = f_promo_custom.strip()
 
                 st.session_state["installed_items"].append({
                     "zone": zone_final,
@@ -431,7 +447,7 @@ with col1:
                     "sale_price": f_sale,
                     "scent": final_scent_spec,
                     "raw_spec": f_spec.strip(),
-                    "promo_text": f_promo_note.strip()
+                    "promo_text": final_promo_str
                 })
                 st.rerun()
 
@@ -467,11 +483,20 @@ with col1:
                     st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown('<div class="premium-card"><div class="card-label">🎁 4. 영업 특약 & 프로모션 메모</div>', unsafe_allow_html=True)
-    promo_notes = st.text_area(
-        "사은품, 결제 방식, 특약 조건 메모",
-        placeholder="고객에게 제공할 프로모션 및 특약 조건을 입력하세요.\n예시:\n- 계약 체결 시 전용 손소독제 2세트 증정\n- 초기 가입비 및 설치비 전액 면제",
-        height=100
+    st.markdown('<div class="premium-card"><div class="card-label">🎁 4. 영업 특약 & 프로모션 설정</div>', unsafe_allow_html=True)
+    st.caption("※ 기본 혜택(부가세 포함, 설치비 무상 지원)은 정식 공지문으로 자동 포함됩니다.")
+    
+    col_b1, col_b2 = st.columns(2)
+    with col_b1:
+        opt_vat = st.checkbox("부가세(VAT) 포함 안내", value=True)
+        opt_install = st.checkbox("초기 설치비/가입비 무상 지원", value=True)
+    with col_b2:
+        opt_banner = st.checkbox("세스코 공식 홍보용 배너 지급", value=True)
+        opt_care = st.checkbox("정기 방문 케어 및 소모품비 포함", value=True)
+
+    promo_notes_custom = st.text_input(
+        "추가 사은품 / 특별 혜택 직접 입력 (선택)",
+        placeholder="예: 계약 체결 시 손소독제 2세트 무상 증정"
     )
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -483,7 +508,21 @@ if generate_btn:
     else:
         with st.spinner(f"🤖 DeepSeek AI가 [{biz_type}] 맞춤 솔루션을 설계 중입니다..."):
             try:
-                ai_data = call_deepseek_smart(client_name, biz_type, selected_odors, custom_notes, st.session_state["installed_items"], promo_notes)
+                promo_bullet_list = []
+                if opt_banner:
+                    promo_bullet_list.append("세스코 홍보용 배너 지급")
+                if opt_install:
+                    promo_bullet_list.append("설치비 무상 지원")
+                if opt_vat:
+                    promo_bullet_list.append("부가세(VAT) 포함")
+                if opt_care:
+                    promo_bullet_list.append("정기 방문 케어 및 소모품 무상 제공")
+                if promo_notes_custom.strip():
+                    promo_bullet_list.append(promo_notes_custom.strip())
+
+                promo_notes_combined = "\n".join([f"- {p}" for p in promo_bullet_list])
+
+                ai_data = call_deepseek_smart(client_name, biz_type, selected_odors, custom_notes, st.session_state["installed_items"], promo_notes_combined)
                 
                 pricing_blocks = []
                 total_sale_sum = 0
@@ -513,21 +552,23 @@ if generate_btn:
                     {"label": "1개월 차 (설치 당월)", "badge": "일할청구", "price_display": "설치일 기준 일할 계산 청구"},
                     {
                         "label": "매월 정기 결제액 (VAT 포함)",
-                        "badge": "프로모션 적용" if (has_any_promo or promo_notes.strip()) else "할인가",
+                        "badge": "프로모션 적용" if (has_any_promo or promo_notes_custom.strip()) else "할인가",
                         "price_display": f"월 {total_sale_sum:,}원"
                     }
                 ]
                 
-                if "사은" in promo_notes or "증정" in promo_notes:
-                    for line in promo_notes.split("\n"):
-                        if "사은" in line or "증정" in line:
-                            clean_gift = line.replace("-", "").strip()
-                            summary_rows.append({
-                                "label": "계약 사은 혜택",
-                                "badge": "사은품",
-                                "price_display": clean_gift
-                            })
-                            break
+                if opt_banner:
+                    summary_rows.append({
+                        "label": "공식 홍보 배너",
+                        "badge": "사은품",
+                        "price_display": "세스코 홍보용 배너 1개 무상 지원"
+                    })
+                if promo_notes_custom.strip():
+                    summary_rows.append({
+                        "label": "특별 계약 혜택",
+                        "badge": "사은품",
+                        "price_display": promo_notes_custom.strip()
+                    })
                             
                 ai_data["summary_rows"] = summary_rows
                 
