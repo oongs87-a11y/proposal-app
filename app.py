@@ -88,6 +88,9 @@ VISIT_CYCLES = [
     "해당없음"
 ]
 
+COMMITMENT_PERIODS = ["36개월", "60개월", "72개월"]
+CONTRACT_PERIODS = ["60개월", "72개월"]
+
 def get_deepseek_api_key():
     if "DEEPSEEK_API_KEY" in st.secrets:
         return st.secrets["DEEPSEEK_API_KEY"]
@@ -100,7 +103,7 @@ def call_deepseek_smart(client_name: str, biz_type: str, odor_types: list, custo
     )
 
     items_text = "\n".join([
-        f"- 구역: {item['zone']} | 제품군: {item['category']} | 제품명: {item['device']} | 수량: {item['qty']}대 | 방문주기: {item.get('cycle', '')} | 상세사양: {item['scent']} | 프로모션: {item.get('promo_text', '')}"
+        f"- 구역: {item['zone']} | 제품군: {item['category']} | 제품명: {item['device']} | 수량: {item['qty']}대 | 색상: {item.get('color', '기본')} | 약정기간: {item.get('commitment', '')} | 계약기간: {item.get('contract', '')} | 방문주기: {item.get('cycle', '')} | 상세사양: {item['scent']} | 프로모션: {item.get('promo_text', '')}"
         for item in selected_items
     ])
 
@@ -125,7 +128,7 @@ def call_deepseek_smart(client_name: str, biz_type: str, odor_types: list, custo
     3. `care_solutions`: 기기별 방문주기와 세스코 정기 관리 3단계 작성
     4. `expected_values`: 좌측 하단용 {biz_type} 맞춤형 핵심 도입 효과 2~3개 작성
     5. `space_guides`: 각 구역별 도입 필요성과 기대 효과를 1~2줄씩 명확하게 작성
-    6. `footer_notice`: 사은품 증정 내역, 설치비 면제, 약정 조건, 부가세/정기 케어 포함 여부를 고객이 읽기 쉬운 정식 공지 문장으로 매끄럽게 완성
+    6. `footer_notice`: 약정/계약조건, 사은품 증정 내역, 설치비 면제, 부가세/정기 케어 포함 여부를 고객이 읽기 쉬운 정식 공지 문장으로 매끄럽게 완성
 
     반드시 마크다운 없이 순수 JSON 포맷으로만 응답하세요:
     {{
@@ -255,8 +258,18 @@ with col1:
             f_cat = st.selectbox("제품군 선택", CATEGORIES)
         with c_cycle_col:
             f_cycle = st.selectbox("방문주기 선택", VISIT_CYCLES, index=0)
+
+        c_comm_col, c_cont_col = st.columns([1, 1])
+        with c_comm_col:
+            f_commitment = st.selectbox("약정기간 선택", COMMITMENT_PERIODS, index=0)
+        with c_cont_col:
+            f_contract = st.selectbox("계약기간 선택", CONTRACT_PERIODS, index=0)
             
-        f_dev = st.text_input("제품 이름 (직접 입력)", placeholder="예: 판테온 트루살균 20평형, 에어퍼퓸200 등")
+        c_dev_col, c_color_col = st.columns([2, 1])
+        with c_dev_col:
+            f_dev = st.text_input("제품 이름 (직접 입력)", placeholder="예: 판테온 트루살균 20평형, 에어퍼퓸200 등")
+        with c_color_col:
+            f_color = st.text_input("제품 색상", placeholder="예: 화이트, 블랙 등")
         
         c_p1, c_p2, c_p3 = st.columns(3)
         with c_p1:
@@ -278,6 +291,12 @@ with col1:
                 zone_final = f_zone if f_zone.strip() else "공용 공간"
                 
                 spec_parts = []
+                if f_commitment:
+                    spec_parts.append(f"약정 {f_commitment}")
+                if f_contract:
+                    spec_parts.append(f"계약 {f_contract}")
+                if f_color.strip():
+                    spec_parts.append(f"색상: {f_color.strip()}")
                 if f_cycle not in ["해당없음", "상시/직접관리"]:
                     spec_parts.append(f_cycle)
                 if f_spec.strip():
@@ -289,6 +308,9 @@ with col1:
                     "zone": zone_final,
                     "category": f_cat,
                     "cycle": f_cycle,
+                    "commitment": f_commitment,
+                    "contract": f_contract,
+                    "color": f_color.strip(),
                     "device": f_dev,
                     "qty": f_qty,
                     "orig_price": f_orig,
@@ -311,10 +333,11 @@ with col1:
 
             c_i1, c_i2 = st.columns([5, 1])
             with c_i1:
-                st.markdown(f"**[{item['zone']}]** {item['device']} ({item['qty']}대) | 정상 {item_orig_sum:,}원 ➔ **할인 {item_sale_sum:,}원**")
+                color_text = f" [{item['color']}]" if item.get("color") else ""
+                st.markdown(f"**[{item['zone']}]** {item['device']}{color_text} ({item['qty']}대) | 정상 {item_orig_sum:,}원 ➔ **할인 {item_sale_sum:,}원**")
                 sub_infos = []
                 if item.get("scent"):
-                    sub_infos.append(f"⚙️ **사양/주기:** `{item['scent']}`")
+                    sub_infos.append(f"⚙️ **사양/조건:** `{item['scent']}`")
                 if item.get("promo_text"):
                     sub_infos.append(f"🎁 **프로모션:** <span style='color:#e11d48; font-weight:bold;'>{item['promo_text']}</span>")
                 if sub_infos:
@@ -353,8 +376,12 @@ if generate_btn:
                     if item.get("promo_text"):
                         has_any_promo = True
                     
+                    prod_name = f"{item['device']} ({item['qty']}대)"
+                    if item.get("color"):
+                        prod_name = f"{item['device']}({item['color']}) ({item['qty']}대)"
+                    
                     pricing_blocks.append({
-                        "product_name": f"{item['device']} ({item['qty']}대)",
+                        "product_name": prod_name,
                         "original_price": f"{sum_orig:,}원" if sum_orig > 0 else "",
                         "discounted_price": f"{sum_sale:,}원",
                         "promo_text": item.get("promo_text", "")
