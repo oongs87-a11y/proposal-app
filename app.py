@@ -84,9 +84,9 @@ st.markdown("""
         margin: 0 0 6px 0 !important;
     }
     .hero-sub {
-        font-size: 13px !important;
-        color: #cbd5e1 !important;
-        font-weight: 400;
+        font-size: 13.5px !important;
+        color: #e2e8f0 !important;
+        font-weight: 500;
         margin: 0 0 12px 0 !important;
     }
     .hero-tags-group {
@@ -342,7 +342,7 @@ st.markdown("""
 <div class="hero-header">
     <div class="hero-badge">🚀 DEVELOPED BY 이웅희</div>
     <div class="hero-title">🛡️ 세스코 환경 솔루션 견적·제안 시스템</div>
-    <div class="hero-sub">밤마다 코드를 손수 깎아 영업인들의 칼퇴를 보장하는 1초 맞춤 견적기</div>
+    <div class="hero-sub">더 빠른 상담, 더 완벽한 제안을 위한 세스코 전용 스마트 툴</div>
     <div class="hero-tags-group">
         <div class="hero-bug-tag">📈 버그 신고: 이웅희 팀장 (계약서 들고 사무실로 오시면 즉시 박멸 🪳)</div>
         <div class="hero-feature-tag">🏆 기능 개선 요청: 이번 달 계약 1건 추가 시 즉시 패치</div>
