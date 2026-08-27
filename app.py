@@ -340,7 +340,7 @@ with col1:
         c1 = st.checkbox("하수구 / 배관 악취", value=False)
         c2 = st.checkbox("습기 · 곰팡이 냄새", value=False)
         c3 = st.checkbox("음식물 / 유기물 부패취", value=False)
-        c7 = st.checkbox("향기 컨설팅 필요", value=False)
+        c7 = st.checkbox("향기 컨설팅", value=False)
     with col_chk2:
         c4 = st.checkbox("화장실 요석 / 암모니아취", value=False)
         c5 = st.checkbox("소독약 / 화학 약품 냄새", value=False)
